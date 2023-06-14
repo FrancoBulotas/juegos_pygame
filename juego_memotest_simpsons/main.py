@@ -68,6 +68,7 @@ rect_start = imagen_start.get_rect()
 
 esta_corriendo = True
 menu_activo = True
+volvio_a_jugar = False
 tiempo_parcial = 0
 tiempo_en_menu = 0
 
@@ -84,27 +85,25 @@ while esta_corriendo:
         if event.type == pygame.MOUSEBUTTONDOWN:
             pos_mouse = event.pos
             SONIDO_CLICK.play()
+            if tiempo_actual_juego - tiempo_en_menu > 200: # para que no se toque una carta al tocar start.
+                if tablero.detectar_colision(tablero_juego, pos_mouse) != None and not menu_activo: 
+                    SONIDO_VOLTEAR.play()
+                    cantidad_movimientos -= 1
 
-            if tablero.detectar_colision(tablero_juego, pos_mouse) != None and not menu_activo: #and not rect_start.collidepoint(pos_mouse):
-                SONIDO_VOLTEAR.play()
-                cantidad_movimientos -= 1
+                if rect_volver_a_jugar.collidepoint(pos_mouse) and termino:
+                    termino = False
+                    cantidad_movimientos = CANTIDAD_INTENTOS
+                    cronometro = TIEMPO_JUEGO
 
-            if rect_volver_a_jugar.collidepoint(pos_mouse) and termino:
-                termino = False
-                cantidad_movimientos = CANTIDAD_INTENTOS
-                cronometro = TIEMPO_JUEGO
-
-                for tarjeta in tablero_juego["tarjetas"]:
-                    tarjeta["visible"] = False
-                    tarjeta["descubierto"] = False
-                
-                tablero_juego = tablero.crear_tablero()
-                tiempo_parcial = tiempo_actual_juego # esto esta para que una vez termine y quiera jugar de nuevo, se muestre el tiempo de previsualizacion.
+                    for tarjeta in tablero_juego["tarjetas"]:
+                        tarjeta["visible"] = False
+                        tarjeta["descubierto"] = False
+                    
+                    tablero_juego = tablero.crear_tablero()
+                    tiempo_parcial = tiempo_actual_juego # esto esta para que una vez termine y quiera jugar de nuevo, se muestre el tiempo de previsualizacion.
 
             if rect_start.collidepoint(pos_mouse):
                 menu_activo = False        
-                rect_start.x = ANCHO_PANTALLA * 2
-    
 
         # Cada vez que pase un segundo restamos uno al tiempo del cronometro
         if event.type == evento_1000ms and not termino and not menu_activo:
@@ -129,12 +128,12 @@ while esta_corriendo:
             
             pantalla_juego.blit(texto_volver_a_jugar, rect_volver_a_jugar)
             pygame.display.flip()
-        else: #elif not termino and not rect_start.collidepoint(pos_mouse):
+        else:
             tablero.actualizar_tablero(tablero_juego)
             # Dibujar pantalla
             pantalla_juego.fill(COLOR_BLANCO) # Pintamos el fondo de color blanco
-            
-            tablero.dibujar_tablero(tablero_juego, pantalla_juego, tiempo_actual_juego - tiempo_parcial)
+        
+            tablero.dibujar_tablero(tablero_juego, pantalla_juego, (tiempo_actual_juego - tiempo_parcial))
 
             utils.mostrar_textos(pantalla_juego, cronometro, cantidad_movimientos)     
     # Mostramos los cambios hechos

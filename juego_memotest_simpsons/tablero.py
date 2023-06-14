@@ -139,9 +139,7 @@ def dibujar_tablero(tablero: dict, pantalla_juego: pygame.Surface, tiempo_actual
     Dibuja todos los elementos del tablero en la superficie recibida como parametro
     Recibe como parametro el tablero y la ventana principal
     '''
-    #tiempo_actual = pygame.time.get_ticks()
-
-    for tarjeta in tablero["tarjetas"]:
+    for tarjeta in tablero["tarjetas"]:  
         if tiempo_actual <= TIEMPO_PREVISUALIZACION:
             pantalla_juego.blit(tarjeta["superficie"], tarjeta["rectangulo"])
         else:
