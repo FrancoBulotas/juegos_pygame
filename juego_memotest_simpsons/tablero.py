@@ -4,6 +4,7 @@ import random
 import tarjeta
 from constantes import *
 
+
 def crear_tablero():
     '''
     Crea una lista de tarjetas
@@ -12,11 +13,8 @@ def crear_tablero():
     tablero = {}
 
     tablero["tarjetas"] = generar_lista_tarjetas()
-
     tablero["tiempo_ultimo_destape"] = 0
-
     tablero["primer_tarjeta_seleccionada"] = None
-
     tablero["segunda_tarjeta_seleccionada"] = None
 
     return tablero
@@ -88,7 +86,6 @@ def actualizar_tablero(tablero: dict) -> None:
     '''
     tiempo_actual = pygame.time.get_ticks()
 
-    # if not volvio_a_jugar:
     if tiempo_actual - tablero["tiempo_ultimo_destape"] <= TIEMPO_MOVIMIENTO:                                                     
         if comprarar_tarjetas(tablero):
             tablero["primer_tarjeta_seleccionada"]["descubierto"] = True
@@ -99,9 +96,8 @@ def actualizar_tablero(tablero: dict) -> None:
 
             tablero["primer_tarjeta_seleccionada"] = None
             tablero["segunda_tarjeta_seleccionada"] = None
-
-        else: #if not comprarar_tarjetas(tablero):               
-            if tiempo_actual - tablero["tiempo_ultimo_destape"] >= TIEMPO_MOVIMIENTO / 3: # para que no sea instantanio cuando se elije mal. 
+        else:               
+            if tiempo_actual - tablero["tiempo_ultimo_destape"] >= TIEMPO_MOVIMIENTO / 4: # para que no sea instantanio cuando se elije mal. 
                 if tablero["primer_tarjeta_seleccionada"] and tablero["segunda_tarjeta_seleccionada"]:
                     tablero["primer_tarjeta_seleccionada"]["descubierto"] = False
                     tablero["segunda_tarjeta_seleccionada"]["descubierto"] = False
@@ -111,7 +107,6 @@ def actualizar_tablero(tablero: dict) -> None:
 
                     tablero["primer_tarjeta_seleccionada"] = None
                     tablero["segunda_tarjeta_seleccionada"] = None
-
     else: # Si execede el tiempo de movimiento entra
         tablero["tiempo_ultimo_destape"] = 0
         
@@ -156,3 +151,17 @@ def dibujar_tablero(tablero: dict, pantalla_juego: pygame.Surface, tiempo_actual
                 pantalla_juego.blit(tarjeta["superficie"], tarjeta["rectangulo"])
 
         
+def dibujar_menu(pantalla_juego, superficie_inicio, rect_start, imagen_start):
+    """
+    - Se encarga de mostrar en pantalla el menu.
+    - Recibe la pantalla del juego.
+    - No retorna nada.
+    """
+    superficie_inicio = pygame.transform.scale(superficie_inicio, (ANCHO_PANTALLA, ALTO_PANTALLA))
+    rect_inicio = superficie_inicio.get_rect()
+
+    pantalla_juego.blit(superficie_inicio, rect_inicio)
+
+    rect_start.x = 205
+    rect_start.y = 100
+    pantalla_juego.blit(imagen_start, rect_start)
