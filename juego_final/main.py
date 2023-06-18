@@ -31,10 +31,6 @@ for i in range(VIDAS_PERSONAJE):
     vida = Vida()
     vidas_personaje.add(vida)
 
-# vidas_misil = pygame.sprite.Group()
-# for i in range(2):
-#     vida = Vida()
-#     vidas_misil.add(vida)
 # Crear un grupo para todos los misiles
 grupo_misiles = pygame.sprite.Group()
 # Crear misiles
@@ -43,11 +39,7 @@ for i in range(10):
     grupo_misiles.add(misil)
 
 # Textos
-fuente = pygame.font.Font(None, 32)
-
-font = pygame.font.SysFont("Arial Narrow", 50)
-text = font.render("PERDISTE", True, (255, 0, 0))
-
+fuente = pygame.font.SysFont("Times New Roman", 32)
 # Variable de estado del juego
 hubo_choque = False
 # Bucle principal
@@ -56,7 +48,6 @@ juego_corriendo = True
 menu_activo = True
 ingreso_nivel_uno = False
 nivel_pausado = False
-
 
 while juego_corriendo:
     # Manejar eventos de entrada
@@ -79,7 +70,7 @@ while juego_corriendo:
         menu.dibujar()
     else:
         if ingreso_nivel_uno:
-            nivel_pausado = nivel_uno(personaje, grupo_misiles, hubo_choque, fondo_nivel_uno, grupo_balas, vidas_personaje)#, vidas_misil)
+            nivel_pausado = nivel_uno(personaje, grupo_misiles, hubo_choque, fondo_nivel_uno, grupo_balas, vidas_personaje)
             if nivel_pausado:
                 texto_game_over = fuente.render("Game Over", True, (255, 0, 0))
                 PANTALLA_JUEGO.blit(texto_game_over, (ANCHO_PANTALLA // 2 - 80, ALTO_PANTALLA // 2 - 80))

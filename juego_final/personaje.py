@@ -20,7 +20,7 @@ class Personaje(pygame.sprite.Sprite):
         - Retorna la imagen de la nave, segun a donde esta apuntando.
         """
         if teclas_presionadas[K_a]:
-            self.rect_nave.x -= VELOCIDAD_PERSONJE
+            self.rect_nave.x -= VELOCIDAD_PERSONAJE
             #Vida.rect_vida.x = self.rect_nave.x
             self.imagen_nave = pygame.image.load(RECURSOS + "nave-izquierda.png")
             self.imagen_nave = pygame.transform.scale(self.imagen_nave, (ANCHO_PERSONAJE, ALTO_PERSONAJE))
@@ -33,7 +33,7 @@ class Personaje(pygame.sprite.Sprite):
                 self.update(grupo_balas)
 
         if teclas_presionadas[K_d]:
-            self.rect_nave.x += VELOCIDAD_PERSONJE
+            self.rect_nave.x += VELOCIDAD_PERSONAJE
             #Vida.rect_vida.x = self.rect_nave.x
             self.imagen_nave = pygame.image.load(RECURSOS + "nave-derecha.png")
             self.imagen_nave = pygame.transform.scale(self.imagen_nave, (ANCHO_PERSONAJE, ALTO_PERSONAJE))
@@ -46,7 +46,7 @@ class Personaje(pygame.sprite.Sprite):
                 self.update(grupo_balas)
 
         if teclas_presionadas[K_w]:
-            self.rect_nave.y -= VELOCIDAD_PERSONJE
+            self.rect_nave.y -= VELOCIDAD_PERSONAJE
             #Vida.rect_vida.y = self.rect_nave.y
             self.imagen_nave = pygame.image.load(RECURSOS + "nave-arriba.png")
             self.imagen_nave = pygame.transform.scale(self.imagen_nave, (ALTO_PERSONAJE, ANCHO_PERSONAJE))
@@ -59,7 +59,7 @@ class Personaje(pygame.sprite.Sprite):
                 self.update(grupo_balas)
         
         if teclas_presionadas[K_s]:
-            self.rect_nave.y += VELOCIDAD_PERSONJE
+            self.rect_nave.y += VELOCIDAD_PERSONAJE
             #Vida.rect_vida.y = self.rect_nave.y
             self.imagen_nave = pygame.image.load(RECURSOS + "nave-abajo.png")
             self.imagen_nave = pygame.transform.scale(self.imagen_nave, (ALTO_PERSONAJE, ANCHO_PERSONAJE))
@@ -92,8 +92,8 @@ class BalaPersonaje(pygame.sprite.Sprite):
         self.direccion_y = dir_y
 
     def update(self):
-        self.rect.x += (self.direccion_x * (VELOCIDAD_PERSONJE+5))
-        self.rect.y += (self.direccion_y * (VELOCIDAD_PERSONJE+5))
+        self.rect.x += (self.direccion_x * (VELOCIDAD_PERSONAJE+5))
+        self.rect.y += (self.direccion_y * (VELOCIDAD_PERSONAJE+5))
 
         if self.rect.x > ANCHO_PANTALLA or self.rect.x < 0 or self.rect.y > ALTO_PANTALLA or self.rect.y < 0:
             self.kill() # eliminamos el misil si sale de la pantalla
