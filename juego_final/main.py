@@ -9,7 +9,7 @@ from niveles import *
 # Inicializar Pygame
 pygame.init()
 # Carga de imagenes
-fondo_nivel_uno = pygame.image.load("Imagenes\\fondo-nivel-uno.jpg")
+fondo_nivel_uno = pygame.image.load("Imagenes\\fondo-nivel-uno2.jpg")
 fondo_nivel_uno = pygame.transform.scale(fondo_nivel_uno, (ANCHO_PANTALLA, ALTO_PANTALLA))
 
 imagen_nivel_uno = pygame.image.load("Imagenes\\previsualizacion-nivel-1.png")

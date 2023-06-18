@@ -3,7 +3,7 @@ from constantes import *
 from pygame.locals import *
 
 
-def nivel_uno(personaje, grupo_misiles, hubo_choque, fondo, grupo_balas, vidas_personaje):#, vidas_misil):
+def nivel_uno(personaje, grupo_misiles, hubo_choque, fondo, grupo_balas, vidas_personaje):
     teclas_presionadas = pygame.key.get_pressed()
     vida = personaje.vida
     # Obtener la posición del personaje y los objetos

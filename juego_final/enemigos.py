@@ -12,7 +12,7 @@ class Enemigo(pygame.sprite.Sprite):
         # self.image.fill((255, 0, 0))
         self.rect = self.image.get_rect()
         self.rect.x = random.randint(0, ANCHO_PANTALLA - self.rect.width)
-        self.rect.y = random.randint(0, ALTO_PANTALLA - self.rect.height)
+        self.rect.y = random.randint((ALTO_PANTALLA - 300), ALTO_PANTALLA - self.rect.height)
         self.velocidad_x = random.randint(-VELOCIDAD_ENEMIGO, VELOCIDAD_ENEMIGO)
         self.velocidad_y = random.randint(-VELOCIDAD_ENEMIGO, VELOCIDAD_ENEMIGO)
         self.colision = False
