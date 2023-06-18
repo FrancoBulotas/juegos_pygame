@@ -22,7 +22,7 @@ ALTO_TARJETA =int((ALTO_PANTALLA - ALTO_TEXTO)/ CANTIDAD_TARJETAS_V) # Alto en p
 TIEMPO_MOVIMIENTO = 3000 # Tiempo maximo que puede estar una tarjeta destapada
 TIEMPO_PREVISUALIZACION = 1500 # Tiempo que hay para ver el dorso de cada carta (agregado por mi)
 FPS = 60 # Frames por segundo del juego
-TIEMPO_JUEGO = 3 # Tiempo maximo de juego
+TIEMPO_JUEGO = 30 # Tiempo maximo de juego
 CANTIDAD_INTENTOS = 15 * 2  # Cantidad de intentos de voltear tarjetas
 CARPETA_RECURSOS = "recursos\\" # Carpeta donde se encuentran los recursos
 

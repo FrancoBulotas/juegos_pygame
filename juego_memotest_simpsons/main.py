@@ -127,7 +127,7 @@ while esta_corriendo:
                 texto_volver_a_jugar = utils.generar_texto(tamaño=30, contenido="VOLVER A JUGAR", color=COLOR_NEGRO)
             
             pantalla_juego.blit(texto_volver_a_jugar, rect_volver_a_jugar)
-            pygame.display.flip()
+            #pygame.display.flip()
         else:
             tablero.actualizar_tablero(tablero_juego)
             # Dibujar pantalla
