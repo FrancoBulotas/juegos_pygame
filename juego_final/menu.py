@@ -10,13 +10,13 @@ class Menu:
         for i, opcion in enumerate(opciones):
             x = 100 + (i * 250)
             y = ALTO_PANTALLA - 500 
-            imagen = pygame.image.load("Imagenes\\previsualizacion-nivel-{}.png".format(i + 1))
+            imagen = pygame.image.load(RECURSOS + "menu\\previsualizacion-nivel-{}.png".format(i + 1))
             self.opciones.append(Opcion(opcion, (x, y), imagen))
 
     def dibujar(self):
-        self.imagen_seleccionar_nivel = pygame.image.load(RECURSOS + "seleccionar-nivel.png")
-        self.imagen_seleccionar_nivel = pygame.transform.scale(self.imagen_seleccionar_nivel, (800, 100))
-        PANTALLA_JUEGO.blit(self.imagen_seleccionar_nivel, (100, ALTO_PANTALLA - 600 ))
+        # self.imagen_seleccionar_nivel = pygame.image.load(RECURSOS + "menu\\seleccionar-nivel.png")
+        # self.imagen_seleccionar_nivel = pygame.transform.scale(self.imagen_seleccionar_nivel, (800, 100))
+        # PANTALLA_JUEGO.blit(self.imagen_seleccionar_nivel, (100, ALTO_PANTALLA - 600 ))
 
         for opcion in self.opciones:
             seleccionado = opcion is self.seleccion
