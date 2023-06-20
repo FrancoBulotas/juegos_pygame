@@ -13,6 +13,11 @@ class Personaje(pygame.sprite.Sprite):
         self.vida = VIDAS_PERSONAJE
         self.misil_disparado = False
         self.contador_municion = MUNICION_PERSONAJE 
+        self.direccion_personaje_x = 0
+        self.direccion_personaje_y = -1
+        self.nombre_imagen_nave_actual = "nave-arriba.png"
+        self.tamanio_bala_actual = (ALTO_MUNICION, ANCHO_MUNICION)
+
 
     def chequeo_teclas(self, teclas_presionadas, grupo_balas):
         """
@@ -25,12 +30,16 @@ class Personaje(pygame.sprite.Sprite):
             #Vida.rect_vida.x = self.rect_nave.x
             self.imagen_nave = pygame.image.load(RECURSOS + "personaje\\nave-izquierda.png")
             self.imagen_nave = pygame.transform.scale(self.imagen_nave, (ANCHO_PERSONAJE, ALTO_PERSONAJE))
+            self.nombre_bala = "bala-izquierda.png"
+            self.tamanio_bala = (ANCHO_MUNICION, ALTO_MUNICION)
+            self.direccion_x_bala = -1
+            self.direccion_y_bala = 0
+            self.direccion_personaje_x = self.direccion_x_bala
+            self.direccion_personaje_y = self.direccion_y_bala
+            self.nombre_imagen_nave_actual = self.nombre_bala
+            self.tamanio_bala_actual = self.tamanio_bala
             if teclas_presionadas[K_SPACE] and not self.misil_disparado:
                 self.misil_disparado = True
-                self.nombre_bala = "bala-izquierda.png"
-                self.tamanio_bala = (ANCHO_MUNICION, ALTO_MUNICION)
-                self.direccion_x_bala = -1
-                self.direccion_y_bala = 0
                 self.chequeo_municion(grupo_balas)
 
         if teclas_presionadas[K_d]:
@@ -38,12 +47,16 @@ class Personaje(pygame.sprite.Sprite):
             #Vida.rect_vida.x = self.rect_nave.x
             self.imagen_nave = pygame.image.load(RECURSOS + "personaje\\nave-derecha.png")
             self.imagen_nave = pygame.transform.scale(self.imagen_nave, (ANCHO_PERSONAJE, ALTO_PERSONAJE))
+            self.nombre_bala = "bala-derecha.png"
+            self.tamanio_bala = (ANCHO_MUNICION, ALTO_MUNICION)
+            self.direccion_x_bala = 1
+            self.direccion_y_bala = 0
+            self.direccion_personaje_x = self.direccion_x_bala
+            self.direccion_personaje_y = self.direccion_y_bala
+            self.nombre_imagen_nave_actual = self.nombre_bala
+            self.tamanio_bala_actual = self.tamanio_bala
             if teclas_presionadas[K_SPACE] and not self.misil_disparado:
                 self.misil_disparado = True
-                self.nombre_bala = "bala-derecha.png"
-                self.tamanio_bala = (ANCHO_MUNICION, ALTO_MUNICION)
-                self.direccion_x_bala = 1
-                self.direccion_y_bala = 0
                 self.chequeo_municion(grupo_balas)
 
         if teclas_presionadas[K_w]:
@@ -51,12 +64,16 @@ class Personaje(pygame.sprite.Sprite):
             #Vida.rect_vida.y = self.rect_nave.y
             self.imagen_nave = pygame.image.load(RECURSOS + "personaje\\nave-arriba.png")
             self.imagen_nave = pygame.transform.scale(self.imagen_nave, (ALTO_PERSONAJE, ANCHO_PERSONAJE))
+            self.nombre_bala = "bala-arriba.png"
+            self.tamanio_bala = (ALTO_MUNICION, ANCHO_MUNICION)
+            self.direccion_x_bala = 0
+            self.direccion_y_bala = -1
+            self.direccion_personaje_x = self.direccion_x_bala
+            self.direccion_personaje_y = self.direccion_y_bala
+            self.nombre_imagen_nave_actual = self.nombre_bala
+            self.tamanio_bala_actual = self.tamanio_bala
             if teclas_presionadas[K_SPACE] and not self.misil_disparado:
-                self.misil_disparado = True
-                self.nombre_bala = "bala-arriba.png"
-                self.tamanio_bala = (ALTO_MUNICION, ANCHO_MUNICION)
-                self.direccion_x_bala = 0
-                self.direccion_y_bala = -1
+                self.misil_disparado = True     
                 self.chequeo_municion(grupo_balas)
         
         if teclas_presionadas[K_s]:
@@ -64,13 +81,26 @@ class Personaje(pygame.sprite.Sprite):
             #Vida.rect_vida.y = self.rect_nave.y
             self.imagen_nave = pygame.image.load(RECURSOS + "personaje\\nave-abajo.png")
             self.imagen_nave = pygame.transform.scale(self.imagen_nave, (ALTO_PERSONAJE, ANCHO_PERSONAJE))
+            self.nombre_bala = "bala-abajo.png"
+            self.tamanio_bala = (ALTO_MUNICION, ANCHO_MUNICION)
+            self.direccion_x_bala = 0
+            self.direccion_y_bala = 1
+            self.direccion_personaje_x = self.direccion_x_bala
+            self.direccion_personaje_y = self.direccion_y_bala
+            self.nombre_imagen_nave_actual = self.nombre_bala
+            self.tamanio_bala_actual = self.tamanio_bala
             if teclas_presionadas[K_SPACE] and not self.misil_disparado:
                 self.misil_disparado = True
-                self.nombre_bala = "bala-abajo.png"
-                self.tamanio_bala = (ALTO_MUNICION, ANCHO_MUNICION)
-                self.direccion_x_bala = 0
-                self.direccion_y_bala = 1
                 self.chequeo_municion(grupo_balas)
+
+
+        if teclas_presionadas[K_SPACE] and not self.misil_disparado:
+            self.misil_disparado = True
+            self.nombre_bala = self.nombre_imagen_nave_actual
+            self.tamanio_bala_actual = self.tamanio_bala 
+            self.direccion_x_bala = self.direccion_personaje_x
+            self.direccion_y_bala = self.direccion_personaje_y
+            self.chequeo_municion(grupo_balas)
         
         if not teclas_presionadas[K_SPACE]:
             self.misil_disparado = False

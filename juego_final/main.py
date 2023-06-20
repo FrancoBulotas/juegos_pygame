@@ -21,33 +21,9 @@ imagen_menu = pygame.transform.scale(imagen_menu, (ANCHO_PANTALLA, ALTO_PANTALLA
 # Crear el menú
 opciones_menu = ["NIVEL I", "IN PROGRESS...", "IN PROGRESS..."]
 menu = Menu(opciones_menu)
-# Crear el personaje
-personaje = Personaje()
-# Creamos balas del personaje
-grupo_balas = pygame.sprite.Group()
 
-# Creamos balas extra
-grupo_balas_extra = pygame.sprite.Group()
-for i in range(3):
-    bala = BalaExtra()
-    grupo_balas_extra.add(bala)
-# lista_x_random = [random.randint(20, ANCHO_PANTALLA-20), random.randint(20, ANCHO_PANTALLA-20), random.randint(20, ANCHO_PANTALLA-20)]
-# lista_y_random = [random.randint(20, ALTO_PANTALLA-90), random.randint(20, ALTO_PANTALLA-90), random.randint(20, ALTO_PANTALLA-90)]
-
-# for i in range(MUNICION_PERSONAJE)
-#     bala = Bala
-# Generamos el grupo de las vidas
-vidas_personaje = pygame.sprite.Group()
-for i in range(VIDAS_PERSONAJE):
-    vida = Vida()
-    vidas_personaje.add(vida)
-
-# Crear un grupo para todos los misiles
-grupo_misiles = pygame.sprite.Group()
-# Crear misiles
-for i in range(10):
-    misil = Enemigo()
-    grupo_misiles.add(misil)
+# Generamos elementos/objetos nivel 1 
+personaje, grupo_balas, grupo_balas_extra, vidas_personaje, grupo_misiles = generar_elementos_nivel_uno()
 
 # Textos
 fuente = pygame.font.SysFont("Times New Roman", 32)
@@ -57,13 +33,14 @@ hubo_choque = False
 tiempo_inicial = pygame.time.get_ticks()
 tiempo_actual = 0
 tiempo_previo = 0 
-cronometro = 60
+cronometro = TIEMPO_NIVEL_UNO
 # Bucle principal
 reloj = pygame.time.Clock()
 juego_corriendo = True
 menu_activo = True
 ingreso_nivel_uno = False
-nivel_pausado = False
+nivel_terminado = False
+resultado_ganador = False
 
 while juego_corriendo:
     tiempo_actual_juego = pygame.time.get_ticks()
@@ -95,11 +72,12 @@ while juego_corriendo:
         menu.dibujar()
     else:
         if ingreso_nivel_uno:
-            nivel_pausado = nivel_uno(personaje, grupo_misiles, hubo_choque, fondo_nivel_uno, grupo_balas, vidas_personaje, cronometro, grupo_balas_extra)
-            if nivel_pausado:
-                texto_game_over = fuente.render("Game Over", True, (255, 0, 0))
-                PANTALLA_JUEGO.blit(texto_game_over, (ANCHO_PANTALLA // 2 - 80, ALTO_PANTALLA // 2 - 80))
-                
+            nivel_terminado, resultado_ganador = nivel_uno(personaje, grupo_misiles, hubo_choque, fondo_nivel_uno, grupo_balas, vidas_personaje, cronometro, grupo_balas_extra)
+
+            if nivel_terminado:
+                resultado_ganador, menu_activo, nivel_terminado, cronometro, personaje, grupo_balas, grupo_balas_extra, vidas_personaje, grupo_misiles = menu_fin_nivel_uno(resultado_ganador, mouse_pos, personaje, grupo_balas, grupo_balas_extra, vidas_personaje, grupo_misiles)
+
+
     pygame.display.flip() # Actualizar la pantalla
     reloj.tick(60)
     
