@@ -1,6 +1,6 @@
 import pygame
 from pygame.locals import *
-from personaje import Personaje, Vida, BalaExtra
+from personaje import Personaje, BalaExtra
 from enemigos import Enemigo
 from constantes import *
 from menu import Menu
@@ -24,11 +24,8 @@ menu = Menu(opciones_menu)
 
 # Generamos elementos/objetos nivel 1 
 personaje, grupo_balas, grupo_balas_extra, vidas_personaje, grupo_misiles = generar_elementos_nivel_uno()
-
 # Textos
 fuente = pygame.font.SysFont("Times New Roman", 32)
-# Variable de estado del juego
-hubo_choque = False
 # Tiempo
 tiempo_inicial = pygame.time.get_ticks()
 tiempo_actual = 0
@@ -53,8 +50,10 @@ while juego_corriendo:
 
             if menu_activo:
                 menu.actualizar_seleccion(mouse_pos)
-                
-                if menu.seleccion is not None and menu.seleccion.texto == "NIVEL I":
+
+                if menu.seleccion is not None and menu.seleccion == "salir":
+                    juego_corriendo = False
+                elif menu.seleccion is not None and menu.seleccion.texto == "NIVEL I":
                     ingreso_nivel_uno = True
                     menu_activo = False
                 #elif menu.seleccion is not None and menu.seleccion.texto == "Primer Nivel":
@@ -72,11 +71,10 @@ while juego_corriendo:
         menu.dibujar()
     else:
         if ingreso_nivel_uno:
-            nivel_terminado, resultado_ganador = nivel_uno(personaje, grupo_misiles, hubo_choque, fondo_nivel_uno, grupo_balas, vidas_personaje, cronometro, grupo_balas_extra)
+            nivel_terminado, resultado_ganador = nivel_uno(personaje, grupo_misiles, fondo_nivel_uno, grupo_balas, vidas_personaje, cronometro, grupo_balas_extra, resultado_ganador)
 
             if nivel_terminado:
                 resultado_ganador, menu_activo, nivel_terminado, cronometro, personaje, grupo_balas, grupo_balas_extra, vidas_personaje, grupo_misiles = menu_fin_nivel_uno(resultado_ganador, mouse_pos, personaje, grupo_balas, grupo_balas_extra, vidas_personaje, grupo_misiles)
-
 
     pygame.display.flip() # Actualizar la pantalla
     reloj.tick(60)

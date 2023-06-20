@@ -6,7 +6,12 @@ class Menu:
     def __init__(self, opciones):
         self.opciones = []
         self.seleccion = None
-        
+        self.imagen_cerrar = pygame.image.load(RECURSOS + "menu\\cruz-negra.png")
+        self.imagen_cerrar = pygame.transform.scale(self.imagen_cerrar, (50, 50))
+        self.rect_cerrar = self.imagen_cerrar.get_rect()
+        self.rect_cerrar.x = ANCHO_PANTALLA - 65
+        self.rect_cerrar.y = 10
+
         for i, opcion in enumerate(opciones):
             x = 100 + (i * 250)
             y = ALTO_PANTALLA - 500 
@@ -14,15 +19,24 @@ class Menu:
             self.opciones.append(Opcion(opcion, (x, y), imagen))
 
     def dibujar(self):
-        # self.imagen_seleccionar_nivel = pygame.image.load(RECURSOS + "menu\\seleccionar-nivel.png")
-        # self.imagen_seleccionar_nivel = pygame.transform.scale(self.imagen_seleccionar_nivel, (800, 100))
-        # PANTALLA_JUEGO.blit(self.imagen_seleccionar_nivel, (100, ALTO_PANTALLA - 600 ))
+        PANTALLA_JUEGO.blit(self.imagen_cerrar, self.rect_cerrar)
+
+        fuente_titulo = pygame.font.SysFont("Arial Black", 120)
+        texto_titulo = fuente_titulo.render("Space Survival", True, (0,0,0))
+        PANTALLA_JUEGO.blit(texto_titulo, (80,40))
+
+        fuente_niveles = pygame.font.SysFont("Arial Black", 50)
+        texto_niveles = fuente_niveles.render("Niveles", True,(0,0,0))
+        PANTALLA_JUEGO.blit(texto_niveles, (100, ALTO_PANTALLA - 600 ))
 
         for opcion in self.opciones:
             seleccionado = opcion is self.seleccion
             opcion.dibujar(seleccionado)
 
     def actualizar_seleccion(self, mouse_pos):
+        if self.rect_cerrar.collidepoint(mouse_pos):
+            self.seleccion = "salir"
+
         for opcion in self.opciones:
             if opcion.esta_seleccionado(mouse_pos):
                 self.seleccion = opcion

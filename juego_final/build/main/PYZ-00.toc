@@ -1912,6 +1912,11 @@
   ('unittest.signals', 'C:\\python38\\Lib\\unittest\\signals.py', 'PYMODULE'),
   ('unittest.suite', 'C:\\python38\\Lib\\unittest\\suite.py', 'PYMODULE'),
   ('unittest.util', 'C:\\python38\\Lib\\unittest\\util.py', 'PYMODULE'),
+  ('vida',
+   'C:\\Users\\Franco\\Desktop\\UTN FRA\\Tecnicatura Superior en '
+   'Programacion\\1er Cuatrimestre\\Laboratorio '
+   'I\\juegos\\juego_final\\vida.py',
+   'PYMODULE'),
   ('webbrowser', 'C:\\python38\\Lib\\webbrowser.py', 'PYMODULE'),
   ('win32com',
    'C:\\python38\\Lib\\site-packages\\win32com\\__init__.py',
