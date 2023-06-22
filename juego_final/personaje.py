@@ -19,12 +19,14 @@ class Personaje(pygame.sprite.Sprite):
         self.tamanio_bala_actual = (ALTO_MUNICION, ANCHO_MUNICION)
 
 
-    def chequeo_teclas(self, teclas_presionadas, grupo_balas):
+    def chequeo_teclas(self, grupo_balas):
         """
         - Verifica si se presiona alguna tecla, si se presiona, hace algo.
         - Recibe la tecla que se presiona.
         - Retorna la imagen de la nave, segun a donde esta apuntando.
         """
+        teclas_presionadas = pygame.key.get_pressed()
+
         if teclas_presionadas[K_a]:
             self.rect_nave.x -= VELOCIDAD_PERSONAJE
             self.caracteristicas_nave_y_bala(posicion_nave_bala="izquierda", dir_bala_x=-1, dir_bala_y=0, tamanio_bala=(ANCHO_MUNICION, ALTO_MUNICION))

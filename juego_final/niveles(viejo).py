@@ -118,12 +118,12 @@ def dibujar_parte_superior(personaje, cronometro):
     PANTALLA_JUEGO.blit(texto_crono, (ANCHO_PANTALLA/2, 0))
 
 
-def generar_municion_extra(i, lista_x_random, lista_y_random):
-    imagen_municion = pygame.image.load(RECURSOS + "personaje\\municion.png")
-    rect_municion = imagen_municion.get_rect()
-    rect_municion.x = lista_x_random[i]
-    rect_municion.y = lista_y_random[i]
-    PANTALLA_JUEGO.blit(imagen_municion, rect_municion)
+# def generar_municion_extra(i, lista_x_random, lista_y_random):
+#     imagen_municion = pygame.image.load(RECURSOS + "personaje\\municion.png")
+#     rect_municion = imagen_municion.get_rect()
+#     rect_municion.x = lista_x_random[i]
+#     rect_municion.y = lista_y_random[i]
+#     PANTALLA_JUEGO.blit(imagen_municion, rect_municion)
 
 
 def verificar_colisiones(personaje, grupo_misiles, vidas_personaje, grupo_balas_extra):
