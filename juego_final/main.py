@@ -58,7 +58,7 @@ while juego_corriendo:
     tiempo_transcurrido = pygame.time.get_ticks() - tiempo_inicial  # Tiempo en milisegundos transcurridos desde el inicio del juego
     tiempo_actual = tiempo_transcurrido // 1000 # Tiempo en seg
 
-    if tiempo_actual != tiempo_previo and ingreso_nivel_uno and not menu_activo:
+    if tiempo_actual != tiempo_previo and ingreso_nivel_uno and not menu_activo and not nivel_uno.juego_en_pausa:
         nivel_uno.cronometro -= 1
     tiempo_previo = tiempo_actual
 
@@ -67,7 +67,7 @@ while juego_corriendo:
         menu.dibujar()
     else:
         if ingreso_nivel_uno:
-            nivel_uno.nivel_terminado, nivel_uno.resultado_ganador = nivel_uno.desarrollo(mouse_pos)
+            nivel_uno.nivel_terminado, nivel_uno.resultado_ganador = nivel_uno.desarrollo(mouse_pos, nivel_uno)
 
             if nivel_uno.nivel_terminado:
                 try:
