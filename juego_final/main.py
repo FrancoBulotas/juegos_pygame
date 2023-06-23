@@ -67,7 +67,7 @@ while juego_corriendo:
         menu.dibujar()
     else:
         if ingreso_nivel_uno:
-            nivel_uno.nivel_terminado, nivel_uno.resultado_ganador = nivel_uno.desarrollo()
+            nivel_uno.nivel_terminado, nivel_uno.resultado_ganador = nivel_uno.desarrollo(mouse_pos)
 
             if nivel_uno.nivel_terminado:
                 try:

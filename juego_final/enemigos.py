@@ -9,13 +9,28 @@ class Enemigo(pygame.sprite.Sprite):
         super().__init__()
         self.image = pygame.image.load(RECURSOS + "enemigos\\cohete-arriba.png")
         self.image = pygame.transform.scale(self.image, (40, 80))
+        # Horizontal
+        self.imagen_derecha = pygame.image.load(RECURSOS + "enemigos\\cohete-derecha.png")
+        self.imagen_derecha = pygame.transform.scale(self.imagen_derecha, (80, 40))
+        self.imagen_izquierda = pygame.image.load(RECURSOS + "enemigos\\cohete-izquierda.png")
+        self.imagen_izquierda = pygame.transform.scale(self.imagen_izquierda, (80, 40))
+        self.rect_horizontal = self.imagen_derecha.get_rect()
+        # Vertical
+        self.imagen_abajo = pygame.image.load(RECURSOS + "enemigos\\cohete-abajo.png")
+        self.imagen_abajo = pygame.transform.scale(self.imagen_abajo, (40, 80))
+        self.imagen_arriba = pygame.image.load(RECURSOS + "enemigos\\cohete-arriba.png")
+        self.imagen_arriba = pygame.transform.scale(self.imagen_arriba, (40, 80))
+        self.rect_vertical = self.imagen_arriba.get_rect()
+
         self.rect = self.image.get_rect()
         self.rect.x = random.randint(0, ANCHO_PANTALLA - self.rect.width)
         self.rect.y = random.randint((ALTO_PANTALLA - 300), ALTO_PANTALLA - self.rect.height)
+        self.mask_misil = pygame.mask.from_surface(self.image)
+
         self.velocidad_x = random.randint(-VELOCIDAD_ENEMIGO, VELOCIDAD_ENEMIGO)
         self.velocidad_y = random.randint(-VELOCIDAD_ENEMIGO, VELOCIDAD_ENEMIGO)
         self.colision = False
-        self.vida = 2
+        self.vida = VIDA_ENEMIGO
         self.vidas_misil = pygame.sprite.Group()
         for i in range(self.vida):
             vida = Vida()
@@ -30,23 +45,19 @@ class Enemigo(pygame.sprite.Sprite):
 
         if self.rect.left < 0:
             self.velocidad_x *= -1
-            self.image = pygame.image.load(RECURSOS + "enemigos\\cohete-derecha.png")
-            self.image = pygame.transform.scale(self.image, (80, 40))
+            self.image = self.imagen_derecha
 
         if self.rect.right > ANCHO_PANTALLA:
             self.velocidad_x *= -1
-            self.image = pygame.image.load(RECURSOS + "enemigos\\cohete-izquierda.png")
-            self.image = pygame.transform.scale(self.image, (80, 40))
+            self.image = self.imagen_izquierda
 
         if self.rect.top < 70:
             self.velocidad_y *= -1
-            self.image = pygame.image.load(RECURSOS + "enemigos\\cohete-abajo.png")
-            self.image = pygame.transform.scale(self.image, (40, 80))
+            self.image = self.imagen_abajo
 
         if self.rect.bottom > ALTO_PANTALLA:
             self.velocidad_y *= -1
-            self.image = pygame.image.load(RECURSOS + "enemigos\\cohete-arriba.png")
-            self.image = pygame.transform.scale(self.image, (40, 80))
+            self.image = self.imagen_arriba
         
         # Verifico si la bala del personaje le pega al misil
         for bala in grupo_balas:

@@ -694,10 +694,10 @@
    'C:\\python38\\Lib\\multiprocessing\\util.py',
    'PYMODULE'),
   ('netrc', 'C:\\python38\\Lib\\netrc.py', 'PYMODULE'),
-  ('niveles',
+  ('nivel_uno',
    'C:\\Users\\Franco\\Desktop\\UTN FRA\\Tecnicatura Superior en '
    'Programacion\\1er Cuatrimestre\\Laboratorio '
-   'I\\juegos\\juego_final\\niveles.py',
+   'I\\juegos\\juego_final\\nivel_uno.py',
    'PYMODULE'),
   ('nturl2path', 'C:\\python38\\Lib\\nturl2path.py', 'PYMODULE'),
   ('numbers', 'C:\\python38\\Lib\\numbers.py', 'PYMODULE'),

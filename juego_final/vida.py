@@ -11,8 +11,8 @@ class Vida(pygame.sprite.Sprite):
 
     def update(self, personaje = None, indice = 0, vidas_misil = None, rect_misil = None) -> None:
         if personaje:
-            self.rect_vida.x = (personaje.rect_nave.x + (indice * 15))
-            self.rect_vida.y = personaje.rect_nave.y - 15
+            self.rect_vida.x = (personaje.rect.x + (indice * 15))
+            self.rect_vida.y = personaje.rect.y - 15
             PANTALLA_JUEGO.blit(self.imagen_vida, self.rect_vida)
 
         elif vidas_misil:

@@ -14,7 +14,7 @@ class NivelUno:
         self.personaje = Personaje()
         self.vida_personaje = self.personaje.vida
         # Creamos balas del personaje
-        self.grupo_balas = pygame.sprite.Group()
+        self.grupo_balas_personaje = pygame.sprite.Group()
         # Creamos balas extra
         self.grupo_balas_extra = pygame.sprite.Group()
         for i in range(CANTIDAD_BALAS_EXTRA_NIVEL_UNO):
@@ -38,40 +38,46 @@ class NivelUno:
         self.nivel_terminado = False
         self.resultado_ganador = False
 
+        self.imagen_pausa = pygame.image.load(RECURSOS + "menu\\pause.png")
+        self.imagen_pausa = pygame.transform.scale(self.imagen_pausa,(40,40))
+        self.rect_pausa = self.imagen_pausa.get_rect()
+        self.juego_en_pausa = False
 
-    def desarrollo(self) -> bool:
+
+    def desarrollo(self, mouse_pos) -> bool:
         """
         - Se encarga de la ejecucion principal del nivel uno.
         - No recibe nada.
         - Retorna si el nivel termino o no, y el resultado. (valores booleanos)
         """
         # Verificar colisiones
-        self.verificar_colisiones()
-        
-        PANTALLA_JUEGO.blit(self.fondo, (0, ALTURA_MENU_SUPERIOR - 10)) # Fondo de pantalla
-        self.dibujar_barra_superior()    
-        # Actualizar la posición del personaje
-        self.personaje.chequeo_teclas(self.grupo_balas)
-        # Agregamos municion extra
-        self.grupo_balas_extra.update()
-
+        self.verificar_colisiones(mouse_pos)
         # Chequear variables del estado del juego
         self.nivel_terminado, self.cronometro, self.resultado_ganador = self.chequeo_estado_juego()
         if  self.nivel_terminado:
             return  self.nivel_terminado, self.resultado_ganador
+
+        PANTALLA_JUEGO.blit(self.fondo, (0, ALTURA_MENU_SUPERIOR - 10)) # Fondo de pantalla
+        self.dibujar_barra_superior()    
+
+        # Agregamos municion extra
+        self.grupo_balas_extra.update()
         
         # Actualizar y dibujar los misiles, balas y vidas
-        for i in range(2):
-            self.grupo_misiles.update(self.grupo_balas)
-        self.grupo_balas.update()        
+        for i in range(VIDA_ENEMIGO):
+            self.grupo_misiles.update(self.grupo_balas_personaje)
+
+        self.grupo_balas_personaje.update()        
 
         for i in range(len(self.vidas_personaje)):
             self.vidas_personaje.update(self.personaje, i)
 
         self.grupo_misiles.draw(PANTALLA_JUEGO)
-        self.grupo_balas.draw(PANTALLA_JUEGO)
+        self.grupo_balas_personaje.draw(PANTALLA_JUEGO)
         
-        PANTALLA_JUEGO.blit(self.personaje.imagen_nave, self.personaje.rect_nave) # Dibuja la imagen del personaje
+        # Actualizar la posición del personaje
+        self.personaje.chequeo_teclas(self.grupo_balas_personaje)
+        #PANTALLA_JUEGO.blit(self.personaje.imagen_nave, self.personaje.rect_nave) # Dibuja la imagen del personaje
 
             # nivel_terminado, resultado_ganador
         return self.nivel_terminado, self.resultado_ganador
@@ -98,29 +104,27 @@ class NivelUno:
         return False, self.cronometro, self.resultado_ganador
 
 
-    def verificar_colisiones(self) -> None:
+    def verificar_colisiones(self, mouse_pos) -> None:
         """
         - Se encarga de verificar si hay colisiones entre los objetos.
-        - No recibe nada.
+        - Recibe la posicion del mouse.
         - No retorna nada
         """
         # Obtener la posición del personaje y los objetos
-        posicion_personaje = self.personaje.rect_nave
+        posicion_personaje = self.personaje.rect
 
-        # Verificar colisiones entre el personaje y los misiles
-        for misil in self.grupo_misiles:
-            posicion_misil = misil.rect
-            # Si misil.colision es False, y el misil esta chocando con el personaje entra.
-            if not misil.colision and posicion_personaje.colliderect(posicion_misil):
+        # pygame.sprite.spritecollide(self.personaje, self.grupo_misiles, False, pygame.sprite.collide_mask)
+        for misil in self.grupo_misiles:            
+            if not misil.colision and pygame.sprite.collide_mask(self.personaje, misil):
                 # Sacamos de a una vida si hubo un choque
                 for vidas in self.vidas_personaje:
+                    print(self.vida_personaje)
                     vidas.kill()
                     break
                 self.vida_personaje -= 1
-
                 misil.colision = True
             # Si el misil no le esta pegando al personaje, misil.colision vuelve a false.
-            if not posicion_personaje.colliderect(posicion_misil): 
+            if not pygame.sprite.collide_mask(self.personaje, misil): 
                 misil.colision = False
 
         # Verificar colisiones entre personaje y balas extra
@@ -128,6 +132,12 @@ class NivelUno:
             if posicion_personaje.colliderect(bala_extra.rect):
                 self.personaje.contador_municion += MUNICION_POR_BALAS_EXTRA
                 bala_extra.kill()
+
+        #if pygame.mouse.get_pressed()[0]:
+        if self.rect_pausa.collidepoint(mouse_pos) or self.juego_en_pausa:
+            self.juego_en_pausa = True
+            print("tocaste pausa")
+            self.menu_fin(mouse_pos)
 
 
     def dibujar_barra_superior(self) -> None:
@@ -154,6 +164,10 @@ class NivelUno:
         texto_crono = fuente.render(str(self.cronometro), True, (255,255,255))
         PANTALLA_JUEGO.blit(texto_crono, (ANCHO_PANTALLA/2, 0))
 
+        self.rect_pausa.x = ANCHO_PANTALLA - 50
+        self.rect_pausa.y = 10
+        PANTALLA_JUEGO.blit(self.imagen_pausa, self.rect_pausa)
+
 
     def menu_fin(self, mouse_pos):
         """
@@ -173,12 +187,18 @@ class NivelUno:
         rect_volver_al_menu.y = (ALTO_PANTALLA // 2) + 80                        
         PANTALLA_JUEGO.blit(imagen_volver_al_menu, rect_volver_al_menu)
         
-        if self.resultado_ganador:
+        if self.resultado_ganador and not self.juego_en_pausa:
             imagen_ganador = pygame.image.load(RECURSOS + "menu\\WINNER.png")
             PANTALLA_JUEGO.blit(imagen_ganador, ((ANCHO_PANTALLA // 2) - 350, ALTO_PANTALLA // 2 - 80))
-        else:
+
+        elif not self.resultado_ganador and not self.juego_en_pausa:
             imagen_perdedor = pygame.image.load(RECURSOS + "menu\\LOSER.png")
             PANTALLA_JUEGO.blit(imagen_perdedor, ((ANCHO_PANTALLA // 2) - 300, ALTO_PANTALLA // 2 - 80))
+
+        if self.juego_en_pausa:
+            imagen_pausa = pygame.image.load(RECURSOS + "menu\\2.png")
+            PANTALLA_JUEGO.blit(imagen_pausa, ((ANCHO_PANTALLA // 2) - 300, ALTO_PANTALLA // 2 - 80))
+
 
         if pygame.mouse.get_pressed()[0]:
             if rect_volver_a_jugar.collidepoint(mouse_pos):
@@ -190,5 +210,22 @@ class NivelUno:
                 nivel_uno = NivelUno()
                 #    menu_activo, nivel_terminado
                 return True, False, nivel_uno
+            
 
-    
+
+    # ---------------------------------------------------------------------------------------- VERIFICAR COLISIONES ANTES DE MASKS
+        # Verificar colisiones entre el personaje y los misiles
+        # for misil in self.grupo_misiles:
+        #     posicion_misil = misil.rect
+        #     # Si misil.colision es False, y el misil esta chocando con el personaje entra.
+        #     if not misil.colision and posicion_personaje.colliderect(posicion_misil):
+        #         # Sacamos de a una vida si hubo un choque
+        #         for vidas in self.vidas_personaje:
+        #             vidas.kill()
+        #             break
+        #         self.vida_personaje -= 1
+
+        #         misil.colision = True
+        #     # Si el misil no le esta pegando al personaje, misil.colision vuelve a false.
+        #     if not posicion_personaje.colliderect(posicion_misil): 
+        #         misil.colision = False
