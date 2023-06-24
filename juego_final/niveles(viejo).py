@@ -3,7 +3,7 @@ from constantes import *
 from pygame.locals import *
 from personaje import Personaje, BalaExtra
 from vida import Vida
-from enemigos import Enemigo
+from enemigos import Misil
 
 def generar_elementos_nivel_uno():
     # Crear el personaje
@@ -26,7 +26,7 @@ def generar_elementos_nivel_uno():
     grupo_misiles = pygame.sprite.Group()
     # Crear misiles
     for i in range(CANTIDAD_MISILES_NIVEL_UN0):
-        misil = Enemigo()
+        misil = Misil()
         grupo_misiles.add(misil)
     
     return personaje, grupo_balas, grupo_balas_extra, vidas_personaje, grupo_misiles

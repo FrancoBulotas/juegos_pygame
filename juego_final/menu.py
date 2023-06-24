@@ -21,6 +21,11 @@ class Menu:
     def dibujar(self):
         PANTALLA_JUEGO.blit(self.imagen_cerrar, self.rect_cerrar)
 
+        imagen_fondo_niveles =  pygame.image.load(RECURSOS + "menu\\fondo-menu-fin-1.png")
+        imagen_fondo_niveles = pygame.transform.scale(imagen_fondo_niveles, (800, 400))
+        PANTALLA_JUEGO.blit(imagen_fondo_niveles, (80, ALTO_PANTALLA - 600))
+
+
         fuente_titulo = pygame.font.SysFont("Arial Black", 120)
         texto_titulo = fuente_titulo.render("Space Survival", True, (0,0,0))
         PANTALLA_JUEGO.blit(texto_titulo, (80,40))
@@ -39,7 +44,7 @@ class Menu:
 
         for opcion in self.opciones:
             if opcion.esta_seleccionado(mouse_pos):
-                self.seleccion = opcion
+                self.seleccion = opcion.texto
                 
 
 # Clase para representar una opción del menú

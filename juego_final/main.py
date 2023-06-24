@@ -49,10 +49,12 @@ while juego_corriendo:
                 
                 if menu.seleccion is not None and menu.seleccion == "salir":
                     juego_corriendo = False
-                elif menu.seleccion is not None and menu.seleccion.texto == "NIVEL I":
+                elif menu.seleccion is not None and menu.seleccion == "NIVEL I":
                     ingreso_nivel_uno = True
                     menu_activo = False
                 #elif menu.seleccion is not None and menu.seleccion.texto == "Primer Nivel":
+            
+                menu.seleccion = ""
 
     # Control del tiempo
     tiempo_transcurrido = pygame.time.get_ticks() - tiempo_inicial  # Tiempo en milisegundos transcurridos desde el inicio del juego
@@ -75,6 +77,7 @@ while juego_corriendo:
                 except TypeError:
                     nivel_uno.nivel_terminado = True
                     menu_activo = False
+                    
 
     pygame.display.flip() # Actualizar la pantalla
     reloj.tick(60)

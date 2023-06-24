@@ -11,7 +11,7 @@ class Personaje(pygame.sprite.Sprite):
         self.image = pygame.transform.scale(self.image, (50, 100))
         self.rect = self.image.get_rect()
         # Creamos el mask del personaje
-        self.mask_nave = pygame.mask.from_surface(self.image)
+        #self.mask_nave = pygame.mask.from_surface(self.image)
 
         self.vida = VIDAS_PERSONAJE
         self.misil_disparado = False
@@ -128,6 +128,7 @@ class BalaPersonaje(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
+        #self.mask = pygame.mask.from_surface(self.image)
         self.direccion_x = dir_x
         self.direccion_y = dir_y
         self.municion = MUNICION_PERSONAJE

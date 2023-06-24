@@ -1,7 +1,7 @@
 import pygame
 from pygame.locals import *
 from personaje import Personaje, BalaExtra
-from enemigos import Enemigo
+from enemigos import Misil
 from constantes import *
 from menu import Menu
 from niveles import *

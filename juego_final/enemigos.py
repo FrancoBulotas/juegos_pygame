@@ -4,7 +4,7 @@ from constantes import *
 from vida import Vida
 
 
-class Enemigo(pygame.sprite.Sprite):
+class Misil(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
         self.image = pygame.image.load(RECURSOS + "enemigos\\cohete-arriba.png")
@@ -25,7 +25,7 @@ class Enemigo(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = random.randint(0, ANCHO_PANTALLA - self.rect.width)
         self.rect.y = random.randint((ALTO_PANTALLA - 300), ALTO_PANTALLA - self.rect.height)
-        self.mask_misil = pygame.mask.from_surface(self.image)
+        #self.mask = pygame.mask.from_surface(self.image)
 
         self.velocidad_x = random.randint(-VELOCIDAD_ENEMIGO, VELOCIDAD_ENEMIGO)
         self.velocidad_y = random.randint(-VELOCIDAD_ENEMIGO, VELOCIDAD_ENEMIGO)
@@ -59,16 +59,17 @@ class Enemigo(pygame.sprite.Sprite):
             self.velocidad_y *= -1
             self.image = self.imagen_arriba
         
-        # Verifico si la bala del personaje le pega al misil
-        for bala in grupo_balas:
-            if self.rect.colliderect(bala.rect):
-                self.vida -= 1
+        # # Verifico si la bala del personaje le pega al misil
+        # for bala in grupo_balas:
+        #     #if pygame.sprite.collide_mask(bala, self.mask):
+        #     if bala.rect.colliderect(self.rect): 
+        #         self.vida -= 1
 
-                for vida in self.vidas_misil: # Eliminamos la imagen de la vida del misil al que el personaje impacta con sus balas
-                    vida.kill()
-                    break
+        #         for vida in self.vidas_misil: # Eliminamos la imagen de la vida del misil al que el personaje impacta con sus balas
+        #             vida.kill()
+        #             break
 
-                bala.kill()
+        #         bala.kill()
         #si se queda sin vida chau misil
         if self.vida <= 0:
             self.kill()
