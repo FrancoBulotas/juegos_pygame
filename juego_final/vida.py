@@ -1,4 +1,5 @@
 import pygame
+import random
 from constantes import *
 
 
@@ -20,4 +21,15 @@ class Vida(pygame.sprite.Sprite):
             self.rect_vida.y = rect_misil.y - 15
             PANTALLA_JUEGO.blit(self.imagen_vida, self.rect_vida)
 
-    
+
+class VidaExtra(pygame.sprite.Sprite):
+    def __init__(self) -> None:
+        super().__init__()
+        super().__init__()
+        self.image = pygame.image.load(RECURSOS + "personaje\\corazon-extra.png")
+        self.rect = self.image.get_rect()
+        self.rect.x = random.randint(90, ANCHO_PANTALLA-70)
+        self.rect.y = random.randint(90, ALTO_PANTALLA-70)
+        
+    def update(self) -> None:
+        PANTALLA_JUEGO.blit(self.image, self.rect)

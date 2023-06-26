@@ -30,7 +30,7 @@ fuente = pygame.font.SysFont("Times New Roman", 32)
 tiempo_inicial = pygame.time.get_ticks()
 tiempo_actual = 0
 tiempo_previo = 0 
-cronometro = TIEMPO_NIVEL_UNO
+cronometro = TIEMPO_NIVEL
 # Bucle principal
 reloj = pygame.time.Clock()
 juego_corriendo = True

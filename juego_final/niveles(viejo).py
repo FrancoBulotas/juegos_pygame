@@ -12,7 +12,7 @@ def generar_elementos_nivel_uno():
     grupo_balas = pygame.sprite.Group()
     # Creamos balas extra
     grupo_balas_extra = pygame.sprite.Group()
-    for i in range(CANTIDAD_BALAS_EXTRA_NIVEL_UNO):
+    for i in range(CANTIDAD_BALAS_EXTRA):
         bala = BalaExtra()
         grupo_balas_extra.add(bala)
 
@@ -48,11 +48,11 @@ def menu_fin_nivel_uno(resultado_ganador, mouse_pos, personaje, grupo_balas, gru
     if pygame.mouse.get_pressed()[0]:
         if rect_volver_a_jugar.collidepoint(mouse_pos):
             personaje, grupo_balas, grupo_balas_extra, vidas_personaje, grupo_misiles = generar_elementos_nivel_uno()
-            return None, False, False, TIEMPO_NIVEL_UNO, personaje, grupo_balas, grupo_balas_extra, vidas_personaje, grupo_misiles
+            return None, False, False, TIEMPO_NIVEL, personaje, grupo_balas, grupo_balas_extra, vidas_personaje, grupo_misiles
         
         if rect_volver_al_menu.collidepoint(mouse_pos):
             personaje, grupo_balas, grupo_balas_extra, vidas_personaje, grupo_misiles = generar_elementos_nivel_uno()
-            return None, True, False, TIEMPO_NIVEL_UNO, personaje, grupo_balas, grupo_balas_extra, vidas_personaje, grupo_misiles
+            return None, True, False, TIEMPO_NIVEL, personaje, grupo_balas, grupo_balas_extra, vidas_personaje, grupo_misiles
 
     if resultado_ganador:
         imagen_ganador = pygame.image.load(RECURSOS + "menu\\WINNER.png")
