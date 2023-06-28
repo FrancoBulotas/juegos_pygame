@@ -7,7 +7,7 @@ import random
 class Personaje(pygame.sprite.Sprite):
     def __init__(self) -> None:
         super().__init__()
-        self.image = pygame.image.load(RECURSOS + "personaje\\nave\\nave-arriba-1.png")
+        self.image = pygame.image.load(RECURSOS + "personaje\\nave\\nave-arriba-1.png").convert_alpha()
         self.image = pygame.transform.scale(self.image, (50, 100))
         self.rect = self.image.get_rect()
 
@@ -102,11 +102,11 @@ class Personaje(pygame.sprite.Sprite):
         - No retorna nada
         """
         if self.vida_personaje >= 3:
-            self.image = pygame.image.load(RECURSOS + "personaje\\nave\\nave-{}-1.png".format(sentido))
+            self.image = pygame.image.load(RECURSOS + "personaje\\nave\\nave-{}-1.png".format(sentido)).convert_alpha()
         elif self.vida_personaje == 2:
-            self.image = pygame.image.load(RECURSOS + "personaje\\nave\\nave-{}-2.png".format(sentido))
+            self.image = pygame.image.load(RECURSOS + "personaje\\nave\\nave-{}-2.png".format(sentido)).convert_alpha()
         elif self.vida_personaje == 1:
-            self.image = pygame.image.load(RECURSOS + "personaje\\nave\\nave-{}-3.png".format(sentido))
+            self.image = pygame.image.load(RECURSOS + "personaje\\nave\\nave-{}-3.png".format(sentido)).convert_alpha()
 
         self.image = pygame.transform.scale(self.image, tamanio_nave)
         self.nombre_bala = "bala-{}.png".format(sentido)
@@ -152,7 +152,7 @@ class Personaje(pygame.sprite.Sprite):
 class BalaPersonaje(pygame.sprite.Sprite):
     def __init__(self, x, y, dir_x, dir_y, nombre_bala, tamanio_bala) -> None:
         super().__init__()
-        self.image = pygame.image.load(RECURSOS + "personaje\\" + nombre_bala)
+        self.image = pygame.image.load(RECURSOS + "personaje\\" + nombre_bala).convert_alpha()
         self.image = pygame.transform.scale(self.image, tamanio_bala)
         self.rect = self.image.get_rect()
         self.rect.x = x
@@ -172,7 +172,7 @@ class BalaPersonaje(pygame.sprite.Sprite):
 class BalaPersonajeMejorada(pygame.sprite.Sprite):
     def __init__(self, x, y, dir_x, dir_y, nombre_bala, tamanio_bala) -> None:
         super().__init__()
-        self.image = pygame.image.load(RECURSOS + "personaje\\mejorada-" + nombre_bala)
+        self.image = pygame.image.load(RECURSOS + "personaje\\mejorada-" + nombre_bala).convert_alpha()
         self.image = pygame.transform.scale(self.image, tamanio_bala)
         self.rect = self.image.get_rect()
         self.rect.x = x
@@ -192,7 +192,7 @@ class BalaPersonajeMejorada(pygame.sprite.Sprite):
 class BalaExtra(pygame.sprite.Sprite):
     def __init__(self) -> None:
         super().__init__()
-        self.image = pygame.image.load(RECURSOS + "personaje\\municion.png")
+        self.image = pygame.image.load(RECURSOS + "personaje\\municion.png").convert_alpha()
         self.rect = self.image.get_rect()
         self.rect.x = random.randint(90, ANCHO_PANTALLA-70)
         self.rect.y = random.randint(90, ALTO_PANTALLA-70)
@@ -204,7 +204,7 @@ class BalaExtra(pygame.sprite.Sprite):
 class BalaExtraMejorada(pygame.sprite.Sprite):
     def __init__(self) -> None:
         super().__init__()
-        self.image = pygame.image.load(RECURSOS + "personaje\\municion-mejorada-extra.png")
+        self.image = pygame.image.load(RECURSOS + "personaje\\municion-mejorada-extra.png").convert_alpha()
         self.image = pygame.transform.scale(self.image, (50,50))
         self.rect = self.image.get_rect()
         self.rect.x = random.randint(90, ANCHO_PANTALLA-70)

@@ -2,16 +2,13 @@ import pygame
 from pygame.locals import *
 from constantes import *
 from menu import Menu
-from nivel_uno import NivelUno
-from nivel_dos import NivelDos
-from nivel_tres import NivelTres
+from nivel_uno_migracion import NivelUno
+from nivel_dos_migracion import NivelDos
+from nivel_tres_migracion import NivelTres
+from archivos import guardar_archivo, obtener_nombre_archivo
 
 # Inicializar Pygame
 pygame.init()
-# Carga de imagenes
-imagen_menu = pygame.image.load(RECURSOS + "menu\\fondo-menu.jpg") 
-imagen_menu = pygame.transform.scale(imagen_menu, (ANCHO_PANTALLA, ALTO_PANTALLA))
-
 # Crear el menú
 opciones_menu = ["NIVEL I", "NIVEL II", "NIVEL III"]
 menu = Menu(opciones_menu)
@@ -31,6 +28,10 @@ reloj = pygame.time.Clock()
 juego_corriendo = True
 menu_activo = True
 
+flag_archivo_guardado = False
+nivel_uno.archivo_puntos = obtener_nombre_archivo(nivel_uno=True)
+nivel_dos.archivo_puntos = obtener_nombre_archivo(nivel_dos=True)
+nivel_tres.archivo_puntos = obtener_nombre_archivo(nivel_tres=True)
 
 while juego_corriendo:
     tiempo_actual_juego = pygame.time.get_ticks()
@@ -79,40 +80,23 @@ while juego_corriendo:
     tiempo_previo = tiempo_actual
 
     if menu_activo:
-        PANTALLA_JUEGO.blit(imagen_menu, (0,0))
-        menu.dibujar()
+        menu.dibujar(nivel_uno.archivo_puntos, nivel_dos.archivo_puntos, nivel_tres.archivo_puntos)
     else:
         # NIVEL UNO
         if nivel_uno.ingreso_nivel_uno:
             nivel_uno.desarrollo(mouse_pos, nivel_uno)
-            if nivel_uno.nivel_terminado:
-                try:
-                    menu_activo, nivel_uno = nivel_uno.menu_fin(mouse_pos)
-                    # Esto es para que se pueda volver a jugar dandole a volver a jugar
-                    nivel_uno.ingreso_nivel_uno = True
-                except TypeError:
-                    nivel_uno.nivel_terminado = True
-                    menu_activo = False
+            menu_activo = nivel_uno.menu_activo
+            nivel_uno = nivel_uno.nivel_uno
         # NIVEL DOS 
         if nivel_dos.ingreso_nivel_dos:
             nivel_dos.desarrollo(mouse_pos, nivel_dos)
-            if nivel_dos.nivel_terminado:
-                try:
-                    menu_activo, nivel_dos = nivel_dos.menu_fin(mouse_pos)
-                    nivel_dos.ingreso_nivel_dos = True
-                except TypeError:
-                    nivel_dos.nivel_terminado = True
-                    menu_activo = False
+            menu_activo = nivel_dos.menu_activo
+            nivel_dos = nivel_dos.nivel_dos
         # NIVEL TRES
         if nivel_tres.ingreso_nivel_tres:
             nivel_tres.desarrollo(mouse_pos, nivel_tres)
-            if nivel_tres.nivel_terminado:
-                try:
-                    menu_activo, nivel_tres = nivel_tres.menu_fin(mouse_pos)
-                    nivel_tres.ingreso_nivel_tres = True
-                except TypeError:
-                    nivel_tres.nivel_terminado = True
-                    menu_activo = False
+            menu_activo = nivel_tres.menu_activo
+            nivel_tres = nivel_tres.nivel_tres
 
     pygame.display.flip() # Actualizar la pantalla
     reloj.tick(60)

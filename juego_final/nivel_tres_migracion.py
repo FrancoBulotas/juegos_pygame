@@ -4,11 +4,13 @@ from pygame.locals import *
 from personaje import Personaje, BalaExtra, BalaExtraMejorada
 from vida import Vida, VidaExtra
 from enemigos import NaveAlien
+from general_niveles import GeneralNiveles
+from archivos import guardar_archivo, obtener_nombre_archivo
 
 
 class NivelTres:
     def __init__(self) -> None:
-        self.fondo = pygame.image.load(RECURSOS + "fondo_niveles\\fondo-nivel-tres.jpg")
+        self.fondo = pygame.image.load(RECURSOS + "fondo_niveles\\fondo-nivel-tres.jpg").convert_alpha()
         self.fondo = pygame.transform.scale(self.fondo, (ANCHO_PANTALLA, ALTO_PANTALLA))
         # Crear el personaje
         self.personaje = Personaje()
@@ -44,23 +46,27 @@ class NivelTres:
         # Generamos enemigo
         self.nave_alien_violeta = NaveAlien(nivel_dos=True)
         self.nave_alien_plateado = NaveAlien(nivel_tres=True)
-
         # Variables de estado del juego
         self.cronometro = TIEMPO_NIVEL
         self.cronometro_previo = TIEMPO_NIVEL
-        self.intervalo = 2
+        self.intervalo = 1
 
         self.menu_activo = False
         self.nivel_terminado = False
         self.resultado_ganador = False
         self.ingreso_nivel_tres = False
 
-        self.imagen_pausa = pygame.image.load(RECURSOS + "menu\\iconos\\pause.png")
+        self.imagen_pausa = pygame.image.load(RECURSOS + "menu\\iconos\\pause.png").convert_alpha()
         self.imagen_pausa = pygame.transform.scale(self.imagen_pausa,(40,40))
         self.rect_pausa = self.imagen_pausa.get_rect()
         self.juego_en_pausa = False
 
         self.contador_puntos = 0
+
+        self.flag_archivo_guardado = False
+        self.archivo_puntos = obtener_nombre_archivo(nivel_tres=True)
+        self.menu_nivel = GeneralNiveles(self.personaje)
+
 
     def desarrollo(self, mouse_pos, nivel_tres):
         """
@@ -69,7 +75,6 @@ class NivelTres:
         - Retorna si el nivel termino o no, y el resultado. (valores booleanos)
         """
         self.nivel_tres = nivel_tres
-
         self.verificar_colisiones(mouse_pos)
 
         if not self.juego_en_pausa and not self.nivel_terminado:
@@ -77,7 +82,7 @@ class NivelTres:
             self.chequeo_estado_juego()
 
             PANTALLA_JUEGO.blit(self.fondo, (0, ALTURA_MENU_SUPERIOR - 10)) # Fondo de pantalla
-            self.dibujar_barra_superior()    
+            self.menu_nivel.dibujar_barra_superior(self.cronometro, self.nivel_tres, nivel_tres=True)    
 
             # Agregamos municion y vidas extra
             self.grupo_balas_extra.update()
@@ -117,6 +122,16 @@ class NivelTres:
             self.grupo_balas_alien_violeta.draw(PANTALLA_JUEGO)
 
             self.personaje.chequeo_teclas(self.grupo_balas_personaje, self.vida_personaje, self.grupo_balas_personaje_mejoradas)
+
+        if self.nivel_terminado:
+            if not self.flag_archivo_guardado:
+                self.archivo_puntos = guardar_archivo(nivel_tres.contador_puntos, nivel_tres=True)
+                self.flag_archivo_guardado = True
+
+            self.menu_nivel.dibujar_menu_fin(self.nivel_tres)
+            self.eleccion_menu_fin(mouse_pos)
+            # Esto es para que se pueda volver a jugar dandole a volver a jugar
+            self.nivel_tres.ingreso_nivel_tres = True
 
 
     def chequeo_estado_juego(self) -> None:
@@ -321,105 +336,20 @@ class NivelTres:
                         self.contador_puntos += PUNTOS_POR_ALIEN
 
 
-    def dibujar_barra_superior(self) -> None:
-        """
-        - Se encarga de dibujar la barra superior del nivel.
-        - No recibe nada.
-        - No retorna nada.
-        """
-        # Parte negra superior
-        imagen_superior = pygame.image.load(RECURSOS + "fondo_niveles\\nivel-parte-superior-2.png")
-        imagen_superior = pygame.transform.scale(imagen_superior, (ANCHO_PANTALLA + 300, ALTURA_MENU_SUPERIOR))
-        PANTALLA_JUEGO.blit(imagen_superior, (-150, -5))
-
-        imagen_linea = pygame.image.load(RECURSOS + "fondo_niveles\\linea-recta.png")
-        imagen_linea = pygame.transform.scale(imagen_linea, (ANCHO_PANTALLA, 40))
-        PANTALLA_JUEGO.blit(imagen_linea, (0, 60))
-        # Contador disparos
-        fuente = pygame.font.SysFont("Arial Black", 45)
-        texto_municion = fuente.render(str(self.personaje.contador_municion), True, (255,255,255))
-        PANTALLA_JUEGO.blit(texto_municion, (50, 0))
-        imagen_municion = pygame.image.load(RECURSOS + "personaje\\municion.png")
-        PANTALLA_JUEGO.blit(imagen_municion, (10,10))
-
-        texto_municion_mejorada = fuente.render(str(self.personaje.contador_municion_mejorada), True, (255,255,255))
-        PANTALLA_JUEGO.blit(texto_municion_mejorada, (210, 0))
-        imagen_municion_mejorada = pygame.image.load(RECURSOS + "personaje\\municion-mejorada-extra.png")
-        imagen_municion_mejorada = pygame.transform.scale(imagen_municion_mejorada, (50,50))
-        PANTALLA_JUEGO.blit(imagen_municion_mejorada, (150,8))
-        # Contador
-        texto_crono = fuente.render(str(self.cronometro), True, (255,255,255))
-        PANTALLA_JUEGO.blit(texto_crono, (ANCHO_PANTALLA/2, 0))
-        # Contador puntos
-        self.texto_puntos = fuente.render("Total Points ", True, (255,255,255))
-        self.texto_cant_puntos = fuente.render(str(self.contador_puntos), True, (255,255,255))
-        PANTALLA_JUEGO.blit(self.texto_cant_puntos, (ANCHO_PANTALLA/2 - 400, 0))
-
-        self.rect_pausa.x = ANCHO_PANTALLA - 50
-        self.rect_pausa.y = 10
-        PANTALLA_JUEGO.blit(self.imagen_pausa, self.rect_pausa)
-
-
-    def menu_fin(self, mouse_pos):
-        """
-        - Se encarga de dibujar el resultado del nivel, y de verificar si clickea volver a jugar o ir al menu.
-        - Recibe la posicion del mouse.
-        - Retorna si el menu esta activo(bool), si el nivel termino(bool) y la instacia del nivel uno creada nuevamente.
-        """
-        imagen_fondo_menu =  pygame.image.load(RECURSOS + "menu\\menu-fin.png")
-        imagen_fondo_menu = pygame.transform.scale(imagen_fondo_menu, (600, 600))
-        PANTALLA_JUEGO.blit(imagen_fondo_menu, ((ANCHO_PANTALLA // 2) - 300, ALTO_PANTALLA // 2 - 300))
-
-        imagen_volver_a_jugar = pygame.image.load(RECURSOS + "menu\\iconos\\repeat.png")
-        rect_volver_a_jugar = imagen_volver_a_jugar.get_rect()
-        rect_volver_a_jugar.x = (ANCHO_PANTALLA // 2) + 160
-        rect_volver_a_jugar.y = (ALTO_PANTALLA // 2) + 140                     
-        PANTALLA_JUEGO.blit(imagen_volver_a_jugar, rect_volver_a_jugar)
-
-        imagen_volver_al_menu = pygame.image.load(RECURSOS + "menu\\iconos\\home.png")
-        rect_volver_al_menu = imagen_volver_al_menu.get_rect()
-        rect_volver_al_menu.x = (ANCHO_PANTALLA // 2) - 230 
-        rect_volver_al_menu.y = (ALTO_PANTALLA // 2) + 140                        
-        PANTALLA_JUEGO.blit(imagen_volver_al_menu, rect_volver_al_menu)
-        
-        # Menu pausado
-        imagen_paused = pygame.image.load(RECURSOS + "menu\\paused.png")
-        
-        imagen_play = pygame.image.load(RECURSOS + "menu\\iconos\\play.png")
-        rect_play = imagen_play.get_rect()
-        rect_play.x = (ANCHO_PANTALLA // 2) - 30
-        rect_play.y = ALTO_PANTALLA // 2 + 140
-        if self.juego_en_pausa and self.nivel_terminado:            
-            PANTALLA_JUEGO.blit(imagen_paused, ((ANCHO_PANTALLA // 2) - 125, ALTO_PANTALLA // 2 - 150))
-            PANTALLA_JUEGO.blit(imagen_play, rect_play)
-
-
-        if self.resultado_ganador and not self.juego_en_pausa:
-            PANTALLA_JUEGO.blit(self.texto_puntos, ((ANCHO_PANTALLA // 2) - 230, ALTO_PANTALLA // 2 + 10))
-            PANTALLA_JUEGO.blit(self.texto_cant_puntos, ((ANCHO_PANTALLA // 2) + 100, ALTO_PANTALLA // 2 + 10))
-            imagen_ganador = pygame.image.load(RECURSOS + "menu\\WIN.png")
-            PANTALLA_JUEGO.blit(imagen_ganador, ((ANCHO_PANTALLA // 2) - 170, ALTO_PANTALLA // 2 - 150))
-
-        elif not self.resultado_ganador and not self.juego_en_pausa:
-            imagen_perdedor = pygame.image.load(RECURSOS + "menu\\LOSER.png")
-            PANTALLA_JUEGO.blit(imagen_perdedor, ((ANCHO_PANTALLA // 2) - 270, ALTO_PANTALLA // 2 - 150))
-
+    def eleccion_menu_fin(self, mouse_pos):
         if pygame.mouse.get_pressed()[0]:
-            if rect_volver_a_jugar.collidepoint(mouse_pos):
-                nivel_tres = NivelTres()
+            if self.menu_nivel.rect_volver_a_jugar.collidepoint(mouse_pos):
+                self.nivel_uno = NivelTres()
                 self.menu_activo = False
                 self.nivel_terminado = False
-                return self.menu_activo, nivel_tres
-            
-            if rect_play.collidepoint(mouse_pos) and self.juego_en_pausa:
+
+            if self.menu_nivel.rect_play.collidepoint(mouse_pos) and self.juego_en_pausa:
                 self.juego_en_pausa = False
                 self.menu_activo = False
                 self.nivel_terminado = False
-                return self.menu_activo, self.nivel_tres
-            
-            if rect_volver_al_menu.collidepoint(mouse_pos):
-                nivel_tres = NivelTres()
+                
+            if self.menu_nivel.rect_volver_al_menu.collidepoint(mouse_pos):
+                self.nivel_uno = NivelTres()
                 self.menu_activo = True
                 self.nivel_terminado = False
-                self.ingreso_nivel_tres = False
-                return self.menu_activo, nivel_tres
+                self.ingreso_nivel_uno = False
