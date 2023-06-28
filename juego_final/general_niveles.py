@@ -68,10 +68,10 @@ class GeneralNiveles:
         PANTALLA_JUEGO.blit(self.imagen_linea, (0, 60))
         # Contador disparos
         PANTALLA_JUEGO.blit(self.texto_municion, (50, 0))
+        PANTALLA_JUEGO.blit(self.imagen_municion, (10,10))
         if nivel_tres:
             PANTALLA_JUEGO.blit(self.texto_municion_mejorada, (210, 0))
             PANTALLA_JUEGO.blit(self.imagen_municion_mejorada, (150,8))
-            PANTALLA_JUEGO.blit(self.imagen_municion, (10,10))
         # Contador
         self.texto_crono = self.fuente.render(str(self.cronometro), True, (255,255,255))
         PANTALLA_JUEGO.blit(self.texto_crono, (ANCHO_PANTALLA/2, 0))

@@ -162,6 +162,25 @@ class NivelTres:
             self.resultado_ganador = False
 
 
+    def eleccion_menu_fin(self, mouse_pos):
+        if pygame.mouse.get_pressed()[0]:
+            if self.menu_nivel.rect_volver_a_jugar.collidepoint(mouse_pos):
+                self.nivel_uno = NivelTres()
+                self.menu_activo = False
+                self.nivel_terminado = False
+
+            if self.menu_nivel.rect_play.collidepoint(mouse_pos) and self.juego_en_pausa:
+                self.juego_en_pausa = False
+                self.menu_activo = False
+                self.nivel_terminado = False
+                
+            if self.menu_nivel.rect_volver_al_menu.collidepoint(mouse_pos):
+                self.nivel_uno = NivelTres()
+                self.menu_activo = True
+                self.nivel_terminado = False
+                self.ingreso_nivel_uno = False
+
+
     def verificar_colisiones(self, mouse_pos) -> None:
         """
         - Se encarga de verificar si hay colisiones entre los objetos.
@@ -236,10 +255,6 @@ class NivelTres:
             if pygame.sprite.collide_mask(self.personaje, bala_extra_mejorada):
                 self.personaje.contador_municion_mejorada += MUNICION_POR_BALAS_EXTRA_MEJORADA
                 bala_extra_mejorada.kill()
-        # Click en pausa
-        if self.rect_pausa.collidepoint(mouse_pos) or self.juego_en_pausa:
-            self.juego_en_pausa = True
-            self.nivel_terminado = True
 
         # Verifico si la bala del personaje le pega al alien_violeta y a sus balas
         for bala_personaje in self.grupo_balas_personaje:    
@@ -335,21 +350,7 @@ class NivelTres:
                     if bala_alien.vida == 0:
                         self.contador_puntos += PUNTOS_POR_ALIEN
 
-
-    def eleccion_menu_fin(self, mouse_pos):
-        if pygame.mouse.get_pressed()[0]:
-            if self.menu_nivel.rect_volver_a_jugar.collidepoint(mouse_pos):
-                self.nivel_uno = NivelTres()
-                self.menu_activo = False
-                self.nivel_terminado = False
-
-            if self.menu_nivel.rect_play.collidepoint(mouse_pos) and self.juego_en_pausa:
-                self.juego_en_pausa = False
-                self.menu_activo = False
-                self.nivel_terminado = False
-                
-            if self.menu_nivel.rect_volver_al_menu.collidepoint(mouse_pos):
-                self.nivel_uno = NivelTres()
-                self.menu_activo = True
-                self.nivel_terminado = False
-                self.ingreso_nivel_uno = False
+        # Click en pausa
+        if self.menu_nivel.rect_pausa.collidepoint(mouse_pos) or self.juego_en_pausa:
+            self.juego_en_pausa = True
+            self.nivel_terminado = True
