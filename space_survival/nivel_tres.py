@@ -62,6 +62,8 @@ class NivelTres:
         self.juego_en_pausa = False
 
         self.contador_puntos = 0
+        self.contador_eliminaciones_naves = 0
+        self.contador_eliminaciones_aliens = 0
 
         self.flag_archivo_guardado = False
         self.archivo_puntos = obtener_nombre_archivo_puntos(nivel_tres=True)
@@ -122,7 +124,8 @@ class NivelTres:
         if self.nivel_terminado:
             if not self.flag_archivo_guardado:
                 #self.archivo_puntos = guardar_archivo_puntos(nivel.contador_puntos, nivel_tres=True)
-                guardar_puntos_en_base(self.nivel.contador_puntos, cursor, conexion)
+                guardar_puntos_en_base(self.nivel.contador_puntos, cursor, eliminaciones_alien=self.contador_eliminaciones_aliens, eliminaciones_nave_alien=self.contador_eliminaciones_naves)
+                conexion.commit()
                 self.flag_archivo_guardado = True
 
             self.general_nivel.dibujar_menu_fin(self.nivel, sonidos)
@@ -251,6 +254,7 @@ class NivelTres:
                     break
                 # Puntos por matar nave alien
                 if self.nave_alien_violeta.vida == 0:
+                    self.contador_eliminaciones_naves += 1
                     self.contador_puntos += PUNTOS_POR_NAVE_ALIEN
                 sonidos.SONIDO_GOLPE_MISIL.play()
                 bala_personaje.kill()
@@ -263,6 +267,7 @@ class NivelTres:
                         break
                     # Puntos por matar alien
                     if bala_alien.vida == 0:
+                        self.contador_eliminaciones_aliens += 1
                         self.contador_puntos += PUNTOS_POR_ALIEN
                     bala_personaje.kill()  
 
@@ -277,6 +282,7 @@ class NivelTres:
                     cont += 1
                 # Puntos por matar nave alien
                 if self.nave_alien_violeta.vida == 0:
+                    self.contador_eliminaciones_naves += 1
                     self.contador_puntos += PUNTOS_POR_NAVE_ALIEN
                     sonidos.SONIDO_GOLPE_MISIL_MEJORADO.play()
                 bala_personaje_mejorada.kill()
@@ -289,6 +295,7 @@ class NivelTres:
                         break
                     # Puntos por matar alien
                     if bala_alien.vida == 0:
+                        self.contador_eliminaciones_aliens += 1
                         self.contador_puntos += PUNTOS_POR_ALIEN
                     sonidos.SONIDO_GOLPE_MISIL_MEJORADO.play()
 
@@ -301,6 +308,7 @@ class NivelTres:
                     break
                 # Puntos por matar nave alien
                 if self.nave_alien_plateado.vida == 0:
+                    self.contador_eliminaciones_naves += 1
                     self.contador_puntos += PUNTOS_POR_NAVE_ALIEN
                 sonidos.SONIDO_GOLPE_MISIL.play()
                 bala_personaje.kill()
@@ -313,6 +321,7 @@ class NivelTres:
                         break
                     # Puntos por matar alien
                     if bala_alien.vida == 0:
+                        self.contador_eliminaciones_aliens += 1
                         self.contador_puntos += PUNTOS_POR_ALIEN
                     bala_personaje.kill()  
         
@@ -327,6 +336,7 @@ class NivelTres:
                     cont += 1
                 # Puntos por matar nave alien
                 if self.nave_alien_plateado.vida == 0:
+                    self.contador_eliminaciones_naves += 1
                     self.contador_puntos += PUNTOS_POR_NAVE_ALIEN
                 sonidos.SONIDO_GOLPE_MISIL_MEJORADO.play()
                 bala_personaje_mejorada.kill()
@@ -339,10 +349,6 @@ class NivelTres:
                         break
                     # Puntos por matar alien
                     if bala_alien.vida == 0:
+                        self.contador_eliminaciones_aliens += 1
                         self.contador_puntos += PUNTOS_POR_ALIEN
                     sonidos.SONIDO_GOLPE_MISIL_MEJORADO.play()
-
-        # # Click en pausa
-        # if self.general_nivel.rect_pausa.collidepoint(mouse_pos) or self.juego_en_pausa:
-        #     self.juego_en_pausa = True
-        #     self.nivel_terminado = True

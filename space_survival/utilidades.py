@@ -124,44 +124,88 @@ class Sonidos:
 # ---------------------------BASE DE DATOS---------------------------------------
 def crear_base_y_cursor(nivel):
     if nivel == 1:
-        conexion = sqlite3.connect('base-puntuacion-uno.db')
+        conexion = sqlite3.connect('base-nivel-uno.db')
         cursor = conexion.cursor()
-        cursor.execute('''CREATE TABLE IF NOT EXISTS puntuacion
-                         (puntos INTEGER)''')
+        cursor.execute('''CREATE TABLE IF NOT EXISTS nivel
+                         (puntos INTEGER, eliminaciones_misil INTEGER, eliminaciones_alien INTEGER, eliminaciones_nave_alien INTEGER)''')
         return conexion, cursor
     if nivel == 2:
-        conexion = sqlite3.connect('base-puntuacion-dos.db')
+        conexion = sqlite3.connect('base-nivel-dos.db')
         cursor = conexion.cursor()
-        cursor.execute('''CREATE TABLE IF NOT EXISTS puntuacion
-                         (puntos INTEGER)''')
+        cursor.execute('''CREATE TABLE IF NOT EXISTS nivel
+                         (puntos INTEGER, eliminaciones_misil INTEGER, eliminaciones_alien INTEGER, eliminaciones_nave_alien INTEGER)''')
         return conexion, cursor
     if nivel == 3:
-        conexion = sqlite3.connect('base-puntuacion-tres.db')
+        conexion = sqlite3.connect('base-nivel-tres.db')
         cursor = conexion.cursor()
-        cursor.execute('''CREATE TABLE IF NOT EXISTS puntuacion
-                         (puntos INTEGER)''')
+        cursor.execute('''CREATE TABLE IF NOT EXISTS nivel
+                         (puntos INTEGER, eliminaciones_misil INTEGER, eliminaciones_alien INTEGER, eliminaciones_nave_alien INTEGER)''')
         return conexion, cursor
 
 
-def guardar_puntos_en_base(puntos, cursor, conexion):    
-    cursor.execute("INSERT INTO puntuacion (puntos) VALUES (?)", (puntos,))
-    conexion.commit()
+def guardar_puntos_en_base(puntos, cursor, eliminaciones_misil=0, eliminaciones_alien=0, eliminaciones_nave_alien=0):    
+    #cursor.execute("INSERT INTO nivel (puntos) VALUES (?)", (puntos,))
+    # if misil:
+    cursor.execute("INSERT INTO nivel (puntos, eliminaciones_misil, eliminaciones_alien, eliminaciones_nave_alien) VALUES (?, ?, ?, ?)", (puntos, eliminaciones_misil, eliminaciones_alien, eliminaciones_nave_alien,))
+    # if alien:
+    #     cursor.execute("INSERT INTO nivel (puntos, eliminaciones_alien) VALUES (?, ?)", (puntos, eliminaciones,))
+    # if nave_alien:
+    #     cursor.execute("INSERT INTO nivel (puntos, eliminaciones_nave_alien) VALUES (?, ?)", (puntos, eliminaciones,))
+
+def traer_puntos_maximos_de_base(cursor):
+    cursor.execute("SELECT MAX(puntos) FROM nivel")
+    return cursor.fetchone()[0]
+
+def suma_cantidad_eliminaciones(cursor, misil=False, alien=False, nave_alien=False):
+    # Obtener el último valor de una tabla
+    if misil:
+        cursor.execute("SELECT SUM(eliminaciones_misil) FROM nivel")
+        resultado = cursor.fetchone()[0]
+        if cantidad_filas_base(cursor) == 0:
+            return 0
+        else:
+            return resultado   
+    # ADAPTAR A NIVEL 2 Y 3
+    if alien:
+        cursor.execute("SELECT SUM(eliminaciones_alien) FROM nivel")
+        resultado = cursor.fetchone()[0]
+        if cantidad_filas_base(cursor) == 0:
+            return 0
+        else:
+            return resultado
+    if nave_alien:
+        cursor.execute("SELECT SUM(eliminaciones_nave_alien) FROM nivel")
+        resultado = cursor.fetchone()[0]
+        if cantidad_filas_base(cursor) == 0:
+            return 0
+        else:
+            return resultado
+    
+# def guardar_eliminaciones_en_base(cursor, eliminaciones, misil=False, alien=False, nave_alien=False):
+#     if misil:
+#         cursor.execute("INSERT INTO nivel (eliminaciones_misil) VALUES (?)", (eliminaciones,))
+#     if alien:
+#         cursor.execute("INSERT INTO nivel (eliminaciones_alien) VALUES (?)", (eliminaciones,))
+#     if nave_alien:
+#         cursor.execute("INSERT INTO nivel (eliminaciones_nave_alien) VALUES (?)", (eliminaciones,))
+
+def cantidad_filas_base(cursor):
+    cursor.execute("SELECT * FROM nivel")
+    filas = cursor.fetchall()
+    cont = 0
+    for _ in filas:
+        cont+=1
+    return cont
 
 
 def borrar_datos_base(cursor, conexion):
     for i in range(40):
         i += 1
-        cursor.execute("DELETE FROM puntuacion WHERE id = ?", (i,))
+        cursor.execute("DELETE FROM nivel WHERE id = ?", (i,))
         conexion.commit()
 
-
-def traer_puntos_maximos_de_base(cursor):
-    cursor.execute("SELECT MAX(puntos) FROM puntuacion")
-    return cursor.fetchone()[0]
-
-
 def printear_tabla_base(cursor):
-    cursor.execute("SELECT * FROM puntuacion")
+    cursor.execute("SELECT * FROM nivel")
 
     filas = cursor.fetchall()
     for fila in filas:

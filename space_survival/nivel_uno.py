@@ -43,6 +43,7 @@ class NivelUno:
         self.resultado_ganador = False
         self.ingreso_nivel = False
         self.contador_puntos = 0
+        self.contador_eliminaciones = 0
 
         self.juego_en_pausa = False
         self.flag_archivo_guardado = False
@@ -87,7 +88,8 @@ class NivelUno:
         if self.nivel_terminado:
             if not self.flag_archivo_guardado:
                 #self.archivo_puntos = guardar_archivo_puntos(self.nivel.contador_puntos, nivel_uno=True)
-                guardar_puntos_en_base(self.nivel.contador_puntos, cursor, conexion)
+                guardar_puntos_en_base(self.nivel.contador_puntos, cursor, eliminaciones_misil=self.contador_eliminaciones)
+                conexion.commit()
                 self.flag_archivo_guardado = True
 
             self.general_nivel.dibujar_menu_fin(self.nivel, sonidos)
@@ -162,6 +164,7 @@ class NivelUno:
                         break
                     # sumamos puntos al matar al misil
                     if misil.vida == 0:
+                        self.contador_eliminaciones += 1
                         self.contador_puntos += PUNTOS_POR_MISIL
                     bala.kill()
         

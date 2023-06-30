@@ -6,20 +6,20 @@ class GeneralNiveles:
     def __init__(self, personaje) -> None:
         self.personaje = personaje
 
-        self.imagen_pausa = pygame.image.load(RECURSOS + "menu\\iconos\\pause.png")
+        self.imagen_pausa = pygame.image.load(RECURSOS + "menu\\iconos\\pause.png").convert_alpha()
         self.imagen_pausa = pygame.transform.scale(self.imagen_pausa,(40,40))
         self.rect_pausa = self.imagen_pausa.get_rect()
             
-        self.imagen_fondo_menu =  pygame.image.load(RECURSOS + "menu\\menu-fin.png")
+        self.imagen_fondo_menu =  pygame.image.load(RECURSOS + "menu\\menu-fin.png").convert_alpha()
         self.imagen_fondo_menu = pygame.transform.scale(self.imagen_fondo_menu, (600, 600))
 
         
-        self.imagen_volver_a_jugar = pygame.image.load(RECURSOS + "menu\\iconos\\repeat.png")
+        self.imagen_volver_a_jugar = pygame.image.load(RECURSOS + "menu\\iconos\\repeat.png").convert_alpha()
         self.rect_volver_a_jugar = self.imagen_volver_a_jugar.get_rect()
         self.rect_volver_a_jugar.x = (ANCHO_PANTALLA // 2) + 160
         self.rect_volver_a_jugar.y = (ALTO_PANTALLA // 2) + 140  
 
-        self.imagen_volver_al_menu = pygame.image.load(RECURSOS + "menu\\iconos\\home.png")
+        self.imagen_volver_al_menu = pygame.image.load(RECURSOS + "menu\\iconos\\home.png").convert_alpha()
         self.rect_volver_al_menu = self.imagen_volver_al_menu.get_rect()
         self.rect_volver_al_menu.x = (ANCHO_PANTALLA // 2) - 230 
         self.rect_volver_al_menu.y = (ALTO_PANTALLA // 2) + 140   
@@ -30,25 +30,25 @@ class GeneralNiveles:
         self.rect_pausa.x = ANCHO_PANTALLA - 50
         self.rect_pausa.y = 10
     
-        self.imagen_play = pygame.image.load(RECURSOS + "menu\\iconos\\play.png")
+        self.imagen_play = pygame.image.load(RECURSOS + "menu\\iconos\\play.png").convert_alpha()
         self.rect_play = self.imagen_play.get_rect()
         self.rect_play.x = (ANCHO_PANTALLA // 2) - 30
         self.rect_play.y = ALTO_PANTALLA // 2 + 140
         # Menu pausado
         self.imagen_paused = pygame.image.load(RECURSOS + "menu\\paused.png").convert_alpha()
-        self.imagen_ganador = pygame.image.load(RECURSOS + "menu\\WIN.png")
-        self.imagen_perdedor = pygame.image.load(RECURSOS + "menu\\LOSER.png")
+        self.imagen_ganador = pygame.image.load(RECURSOS + "menu\\WIN.png").convert_alpha()
+        self.imagen_perdedor = pygame.image.load(RECURSOS + "menu\\LOSER.png").convert_alpha()
 
         # Parte negra superior
-        self.imagen_superior = pygame.image.load(RECURSOS + "fondo_niveles\\nivel-parte-superior-2.png")
+        self.imagen_superior = pygame.image.load(RECURSOS + "fondo_niveles\\nivel-parte-superior-2.png").convert_alpha()
         self.imagen_superior = pygame.transform.scale(self.imagen_superior, (ANCHO_PANTALLA + 300, ALTURA_MENU_SUPERIOR))
 
-        self.imagen_linea = pygame.image.load(RECURSOS + "fondo_niveles\\linea-recta.png")
+        self.imagen_linea = pygame.image.load(RECURSOS + "fondo_niveles\\linea-recta.png").convert_alpha()
         self.imagen_linea = pygame.transform.scale(self.imagen_linea, (ANCHO_PANTALLA, 40))
         # Contador disparos
         self.fuente = pygame.font.SysFont("Arial Black", 45)
         self.texto_puntos = self.fuente.render("Total Points ", True, (255,255,255))
-        self.imagen_municion = pygame.image.load(RECURSOS + "personaje\\municion.png")
+        self.imagen_municion = pygame.image.load(RECURSOS + "personaje\\municion.png").convert_alpha()
 
         self.imagen_municion_mejorada = pygame.image.load(RECURSOS + "personaje\\municion-mejorada-extra.png").convert_alpha()
         self.imagen_municion_mejorada = pygame.transform.scale(self.imagen_municion_mejorada, (50,50))

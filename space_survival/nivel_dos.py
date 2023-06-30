@@ -54,6 +54,8 @@ class NivelDos:
         self.juego_en_pausa = False
 
         self.contador_puntos = 0
+        self.contador_eliminaciones_naves = 0
+        self.contador_eliminaciones_aliens = 0
 
         self.flag_archivo_guardado = False
         self.archivo_puntos = obtener_nombre_archivo_puntos(nivel_dos=True)
@@ -116,7 +118,8 @@ class NivelDos:
         if self.nivel_terminado:
             if not self.flag_archivo_guardado:
                 #self.archivo_puntos = guardar_archivo_puntos(nivel.contador_puntos, nivel_dos=True)
-                guardar_puntos_en_base(self.nivel.contador_puntos, cursor, conexion)
+                guardar_puntos_en_base(self.nivel.contador_puntos, cursor, eliminaciones_alien=self.contador_eliminaciones_aliens, eliminaciones_nave_alien=self.contador_eliminaciones_naves)
+                conexion.commit()
                 self.flag_archivo_guardado = True
 
             self.general_nivel.dibujar_menu_fin(self.nivel, sonidos)
@@ -199,7 +202,7 @@ class NivelDos:
                 self.personaje.contador_municion += MUNICION_POR_BALAS_EXTRA
                 bala_extra.kill()
 
-        # Verifico si la bala del personaje le pega al alien y a sus balas
+        # Verifico si la bala del personaje le pega a la nave y a sus balas
         for bala_personaje in self.grupo_balas_personaje:    
             if pygame.sprite.collide_mask(bala_personaje, self.nave_alien):
                 self.nave_alien.vida -= 1
@@ -208,8 +211,8 @@ class NivelDos:
                     break
                 # Puntos por matar nave alien
                 if self.nave_alien.vida == 0:
+                    self.contador_eliminaciones_naves += 1
                     self.contador_puntos += PUNTOS_POR_NAVE_ALIEN
-                
                 sonidos.SONIDO_GOLPE_MISIL.play()
                 bala_personaje.kill()
 
@@ -221,6 +224,7 @@ class NivelDos:
                         break
                     # Puntos por matar alien
                     if bala_alien.vida == 0:
+                        self.contador_eliminaciones_aliens += 1
                         self.contador_puntos += PUNTOS_POR_ALIEN
                     bala_personaje.kill()  
 
@@ -236,8 +240,3 @@ class NivelDos:
             # Si el asteroide no le esta pegando al personaje, asteroide.colision vuelve a false.
             if not pygame.sprite.collide_mask(self.personaje, asteroide): 
                 asteroide.colision = False
-
-        # # Click en pausa
-        # if self.general_nivel.rect_pausa.collidepoint(mouse_pos) or self.juego_en_pausa:
-        #     self.juego_en_pausa = True
-        #     self.nivel_terminado = True

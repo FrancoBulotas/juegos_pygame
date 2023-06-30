@@ -31,6 +31,7 @@ tiempo_previo = 0
 reloj = pygame.time.Clock()
 juego_corriendo = True
 menu_activo = True
+mostrar_estadisticas = False
 
 # Archivos / Base de datos
 # flag_archivo_guardado = False
@@ -59,6 +60,10 @@ while juego_corriendo:
                 if menu.seleccion is not None and menu.seleccion == "salir":
                     guardar_archivo_volumen(sonidos.volumen)
                     juego_corriendo = False
+                elif menu.seleccion is not None and menu.seleccion == "logros":
+                    mostrar_estadisticas = True
+                elif menu.seleccion is not None and menu.seleccion == "salir logros":
+                    mostrar_estadisticas = False
                 elif menu.seleccion is not None and menu.seleccion == "NIVEL I" and not nivel_uno.ingreso_nivel: 
                     nivel_uno.ingreso_nivel = True
                     menu_activo = False
@@ -93,8 +98,10 @@ while juego_corriendo:
     if menu_activo:
         menu.dibujar(cursor_nivel_uno, cursor_nivel_dos, cursor_nivel_tres) 
         menu.sonido(sonidos, arrancar=True)
+        if mostrar_estadisticas:
+            menu.dibujar_menu_estadisticas(cursor_nivel_uno, cursor_nivel_dos, cursor_nivel_tres)
     else:
-        menu.sonido(sonidos, parar=True)
+        menu.sonido(sonidos, parar=True)  
         # NIVEL UNO
         if nivel_uno.ingreso_nivel:
             nivel_uno.desarrollo(mouse_pos, nivel_uno, sonidos, cursor_nivel_uno, conexion_nivel_uno)
