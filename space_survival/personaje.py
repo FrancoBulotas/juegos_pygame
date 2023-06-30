@@ -23,7 +23,7 @@ class Personaje(pygame.sprite.Sprite):
         self.tamanio_bala_actual = (ALTO_MUNICION, ANCHO_MUNICION)
 
 
-    def chequeo_teclas(self, grupo_balas, vida_personaje, grupo_balas_mejorada=None):
+    def chequeo_teclas(self, sonidos, grupo_balas, vida_personaje, grupo_balas_mejorada=None):
         """
         - Verifica si se presiona alguna tecla, si se presiona, hace algo.
         - Recibe la tecla que se presiona.
@@ -38,7 +38,7 @@ class Personaje(pygame.sprite.Sprite):
 
             if teclas_presionadas[K_SPACE] and not self.misil_disparado:
                 self.misil_disparado = True
-                self.chequeo_municion(grupo_balas, grupo_balas_mejorada)
+                self.chequeo_municion(sonidos, grupo_balas, grupo_balas_mejorada)
 
         if teclas_presionadas[K_d]:
             self.rect.x += self.velocidad
@@ -46,7 +46,7 @@ class Personaje(pygame.sprite.Sprite):
 
             if teclas_presionadas[K_SPACE] and not self.misil_disparado:
                 self.misil_disparado = True
-                self.chequeo_municion(grupo_balas, grupo_balas_mejorada)
+                self.chequeo_municion(sonidos, grupo_balas, grupo_balas_mejorada)
 
         if teclas_presionadas[K_w]:
             self.rect.y -= self.velocidad
@@ -54,7 +54,7 @@ class Personaje(pygame.sprite.Sprite):
 
             if teclas_presionadas[K_SPACE] and not self.misil_disparado:
                 self.misil_disparado = True     
-                self.chequeo_municion(grupo_balas, grupo_balas_mejorada)
+                self.chequeo_municion(sonidos, grupo_balas, grupo_balas_mejorada)
         
         if teclas_presionadas[K_s]:
             self.rect.y += self.velocidad
@@ -62,7 +62,7 @@ class Personaje(pygame.sprite.Sprite):
 
             if teclas_presionadas[K_SPACE] and not self.misil_disparado:
                 self.misil_disparado = True
-                self.chequeo_municion(grupo_balas, grupo_balas_mejorada)
+                self.chequeo_municion(sonidos, grupo_balas, grupo_balas_mejorada)
 
         # Chequeo de disparo de misil normal
         if teclas_presionadas[K_SPACE] and not self.misil_disparado:
@@ -71,7 +71,7 @@ class Personaje(pygame.sprite.Sprite):
             self.tamanio_bala_actual = self.tamanio_bala 
             self.direccion_x_bala = self.direccion_personaje_x
             self.direccion_y_bala = self.direccion_personaje_y
-            self.chequeo_municion(grupo_balas, grupo_balas_mejorada)
+            self.chequeo_municion(sonidos, grupo_balas, grupo_balas_mejorada)
 
         if not teclas_presionadas[K_SPACE]:
             self.misil_disparado = False
@@ -83,7 +83,7 @@ class Personaje(pygame.sprite.Sprite):
             self.tamanio_bala_actual = self.tamanio_bala 
             self.direccion_x_bala = self.direccion_personaje_x
             self.direccion_y_bala = self.direccion_personaje_y
-            self.chequeo_municion(grupo_balas, grupo_balas_mejorada, mejorada=True)
+            self.chequeo_municion(sonidos, grupo_balas, grupo_balas_mejorada, mejorada=True)
     
         if not teclas_presionadas[K_v]:
             self.misil_mejorado_disparado = False
@@ -119,23 +119,23 @@ class Personaje(pygame.sprite.Sprite):
         self.tamanio_bala_actual = self.tamanio_bala
 
 
-    def crear_bala(self, grupo_balas, grupo_balas_mejorada=None ,mejorada=False):
+    def crear_bala(self, sonidos, grupo_balas, grupo_balas_mejorada=None ,mejorada=False):
         """
         - Se encarga de crear la instancia de la bala del personaje.
         - Recibe el grupo de balas.
         - No retorna nada.
         """
         if mejorada:
-            SONIDO_DISPARO_PERSONAJE_MEJORADO.play()
+            sonidos.SONIDO_DISPARO_PERSONAJE_MEJORADO.play()
             self.bala_mejorada = BalaPersonajeMejorada(self.rect.x, self.rect.y, self.direccion_x_bala, self.direccion_y_bala, self.nombre_bala, self.tamanio_bala)
             grupo_balas_mejorada.add(self.bala_mejorada)
         else:
-            SONIDO_DISPARO_PERSONAJE.play()
+            sonidos.SONIDO_DISPARO_PERSONAJE.play()
             self.bala = BalaPersonaje(self.rect.x, self.rect.y, self.direccion_x_bala, self.direccion_y_bala, self.nombre_bala, self.tamanio_bala)
             grupo_balas.add(self.bala)
 
     
-    def chequeo_municion(self, grupo_balas, grupo_balas_mejorada, mejorada=False):
+    def chequeo_municion(self, sonidos, grupo_balas, grupo_balas_mejorada, mejorada=False):
         """-
         - Verifica si el personaje tiene municion, si tieneresta uno y llama a crer_bala().
         - Recibe el grupo de balas.
@@ -144,11 +144,11 @@ class Personaje(pygame.sprite.Sprite):
         if mejorada:
             if self.contador_municion_mejorada > 0:
                 self.contador_municion_mejorada -= 1
-                self.crear_bala(grupo_balas, grupo_balas_mejorada, mejorada=True)
+                self.crear_bala(sonidos, grupo_balas, grupo_balas_mejorada, mejorada=True)
         else:
             if self.contador_municion > 0: 
                 self.contador_municion -= 1
-                self.crear_bala(grupo_balas)
+                self.crear_bala(sonidos, grupo_balas)
 
 
 class BalaPersonaje(pygame.sprite.Sprite):

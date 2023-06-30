@@ -5,7 +5,7 @@ from menu import Menu
 from nivel_uno import NivelUno
 from nivel_dos import NivelDos
 from nivel_tres import NivelTres
-from archivos import guardar_archivo, obtener_nombre_archivo
+from utilidades import guardar_archivo_puntos, obtener_nombre_archivo_puntos
 
 # Inicializar Pygame
 pygame.init()
@@ -33,9 +33,9 @@ juego_corriendo = True
 menu_activo = True
 
 flag_archivo_guardado = False
-archivo_puntos_lvl1 = obtener_nombre_archivo(nivel_uno=True)
-archivo_puntos_lvl2 = obtener_nombre_archivo(nivel_dos=True)
-archivo_puntos_lvl3 = obtener_nombre_archivo(nivel_tres=True)
+archivo_puntos_lvl1 = obtener_nombre_archivo_puntos(nivel_uno=True)
+archivo_puntos_lvl2 = obtener_nombre_archivo_puntos(nivel_dos=True)
+archivo_puntos_lvl3 = obtener_nombre_archivo_puntos(nivel_tres=True)
 
 while juego_corriendo:
     tiempo_actual_juego = pygame.time.get_ticks()
@@ -94,7 +94,7 @@ while juego_corriendo:
 
             if nivel_uno.nivel_terminado:
                 if not flag_archivo_guardado:
-                    archivo_puntos_lvl1 = guardar_archivo(nivel_uno.contador_puntos, nivel_uno=True)
+                    archivo_puntos_lvl1 = guardar_archivo_puntos(nivel_uno.contador_puntos, nivel_uno=True)
                     flag_archivo_guardado = True
                 try:
                     menu_activo, nivel_uno = nivel_uno.menu_fin(mouse_pos)
@@ -110,7 +110,7 @@ while juego_corriendo:
 
             if nivel_dos.nivel_terminado:
                 if not flag_archivo_guardado:
-                    archivo_puntos_lvl2 = guardar_archivo(nivel_dos.contador_puntos, nivel_dos=True)
+                    archivo_puntos_lvl2 = guardar_archivo_puntos(nivel_dos.contador_puntos, nivel_dos=True)
                     flag_archivo_guardado = True
                 try:
                     menu_activo, nivel_dos = nivel_dos.menu_fin(mouse_pos)
@@ -125,7 +125,7 @@ while juego_corriendo:
 
             if nivel_tres.nivel_terminado:
                 if not flag_archivo_guardado:
-                    archivo_puntos_lvl3 = guardar_archivo(nivel_tres.contador_puntos, nivel_tres=True)
+                    archivo_puntos_lvl3 = guardar_archivo_puntos(nivel_tres.contador_puntos, nivel_tres=True)
                     flag_archivo_guardado = True
                 try:
                     menu_activo, nivel_tres = nivel_tres.menu_fin(mouse_pos)

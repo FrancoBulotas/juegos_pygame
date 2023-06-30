@@ -1,17 +1,7 @@
 import pygame
 import pyautogui
-
-pygame.mixer.init()
-
-def generar_sonido(ruta: str, volumen: float):
-    '''
-    Función que se encarga de generar un sondi
-    Recibe la ruta en donde se encuentra ese sonido y el volumen del mismo
-    Retorna el sonido para esperar a que se ejecute
-    '''
-    sonido = pygame.mixer.Sound(ruta)
-    sonido.set_volume(volumen)
-    return sonido
+from utilidades import generar_sonido
+#from main import volumen
 
 ANCHO_PANTALLA, ALTO_PANTALLA = pyautogui.size()
 
@@ -30,7 +20,7 @@ VELOCIDAD_MISIL = 6
 VELOCIDAD_NAVE_ALIEN = 4
 VIDAS_PERSONAJE = 3
 VIDA_MISIL = 2
-VIDAS_NAVE_ALIEN_VIOLETA = 10
+VIDAS_NAVE_ALIEN = 10
 VIDAS_ALIEN = 1
 MUNICION_PERSONAJE = 15
 MUNICION_POR_BALAS_EXTRA = 5
@@ -51,16 +41,16 @@ PUNTOS_POR_ALIEN = 25
 PUNTOS_POR_NAVE_ALIEN = 300
 
 # Sonidos
-SONIDO_INICIAR_NIVEL = generar_sonido(RECURSOS + "sonidos\\menu\\start_button.wav", 1)  
-SONIDO_HACIA_ATRAS = generar_sonido(RECURSOS + "sonidos\\menu\\back1.wav", 0.1)  
-SONIDO_FONDO_MENU = generar_sonido(RECURSOS + "sonidos\\musica-fondo-menu.wav", 0.03) 
-SONIDO_DISPARO_PERSONAJE = generar_sonido(RECURSOS + "sonidos\\switch_to_fire_bomb.wav", 0.08)
-SONIDO_DISPARO_PERSONAJE_MEJORADO = generar_sonido(RECURSOS + "sonidos\\rocket_h3_3.wav", 0.08)
-SONIDO_EXPLOSION_MISIL = generar_sonido(RECURSOS + "sonidos\\h3_small_expl4.wav", 0.08)
-SONIDO_GOLPE_MISIL = generar_sonido(RECURSOS + "sonidos\\rocket_expl_lod_far1.wav", 0.08)
-SONIDO_EXPLOSION_NAVE = generar_sonido(RECURSOS + "sonidos\\big_explosions3.wav", 0.03)
-
-
+# volumen = 0.1
+# SONIDO_INICIAR_NIVEL = generar_sonido(RECURSOS + "sonidos\\menu\\start_button.wav", volumen) # 1 
+# SONIDO_HACIA_ATRAS = generar_sonido(RECURSOS + "sonidos\\menu\\back1.wav", volumen) # 0.1
+# SONIDO_FONDO_MENU = generar_sonido(RECURSOS + "sonidos\\musica-fondo-menu.wav", volumen) # 0.03
+# SONIDO_DISPARO_PERSONAJE = generar_sonido(RECURSOS + "sonidos\\switch_to_fire_bomb.wav", volumen) # 0.08
+# SONIDO_DISPARO_PERSONAJE_MEJORADO = generar_sonido(RECURSOS + "sonidos\\rocket_h3_3.wav", volumen) # 0.08
+# SONIDO_EXPLOSION_MISIL = generar_sonido(RECURSOS + "sonidos\\h3_small_expl4.wav", volumen) # 0.08
+# SONIDO_GOLPE_MISIL = generar_sonido(RECURSOS + "sonidos\\rocket_expl_lod_far1.wav", volumen) # 0.08
+# SONIDO_GOLPE_MISIL_MEJORADO = generar_sonido(RECURSOS + "sonidos\\rocket_launcher_lod_far3.wav", volumen) # 0.08
+# SONIDO_EXPLOSION_NAVE = generar_sonido(RECURSOS + "sonidos\\big_explosions3.wav", volumen) # 0.03
 
 
 

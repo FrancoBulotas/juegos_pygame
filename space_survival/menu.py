@@ -1,6 +1,6 @@
 import pygame
 from constantes import *
-from archivos import leer_archivo
+from utilidades import *
 
 # Clase para representar el menú
 class Menu:
@@ -15,6 +15,9 @@ class Menu:
         self.rect_cerrar.x = ANCHO_PANTALLA - 65
         self.rect_cerrar.y = 10
 
+        self.imagen_instrucciones = pygame.image.load(RECURSOS + "menu\\nube.png").convert_alpha()
+        self.imagen_instrucciones = pygame.transform.scale(self.imagen_instrucciones, (450, 400))
+
         self.fuente_mejor_puntuacion = pygame.font.SysFont("Arial Black", 20)
 
         for i, opcion in enumerate(opciones):
@@ -23,7 +26,7 @@ class Menu:
             imagen = pygame.image.load(RECURSOS + "menu\\previsualizacion-nivel-{}.png".format(i + 1)).convert_alpha()
             self.opciones.append(Opcion(opcion, (x, y), imagen))
 
-    def dibujar(self, archivo_puntos_lvl1, archivo_puntos_lvl2, archivo_puntos_lvl3):
+    def dibujar(self, cursor_nivel_uno, cursor_nivel_dos, cursor_nivel_tres):
         PANTALLA_JUEGO.blit(self.imagen_menu, (0,0))
 
         PANTALLA_JUEGO.blit(self.imagen_cerrar, self.rect_cerrar)
@@ -39,17 +42,25 @@ class Menu:
         for opcion in self.opciones:
             opcion.dibujar()
   
-        puntos_nivel_uno = leer_archivo(archivo_puntos_lvl1)
-        self.texto_mejor_puntuacion = self.fuente_mejor_puntuacion.render("Best Score: " + str(puntos_nivel_uno), True, (255,255,255))
-        PANTALLA_JUEGO.blit(self.texto_mejor_puntuacion, (160, ALTO_PANTALLA-190))
+        #puntos_nivel_uno = leer_archivo_puntos(archivo_puntos_lvl1)
+        puntos_nivel_uno = traer_puntos_maximos_de_base(cursor_nivel_uno)
+        if puntos_nivel_uno:
+            self.texto_mejor_puntuacion = self.fuente_mejor_puntuacion.render("Best Score: " + str(puntos_nivel_uno), True, (255,255,255))
+            PANTALLA_JUEGO.blit(self.texto_mejor_puntuacion, (160, ALTO_PANTALLA-190))
 
-        puntos_nivel_dos = leer_archivo(archivo_puntos_lvl2)
-        self.texto_mejor_puntuacion = self.fuente_mejor_puntuacion.render("Best Score: " + str(puntos_nivel_dos), True, (255,255,255))
-        PANTALLA_JUEGO.blit(self.texto_mejor_puntuacion, (520, ALTO_PANTALLA-190))
+        #puntos_nivel_dos = leer_archivo_puntos(archivo_puntos_lvl2)
+        puntos_nivel_dos = traer_puntos_maximos_de_base(cursor_nivel_dos)
+        if puntos_nivel_dos:
+            self.texto_mejor_puntuacion = self.fuente_mejor_puntuacion.render("Best Score: " + str(puntos_nivel_dos), True, (255,255,255))
+            PANTALLA_JUEGO.blit(self.texto_mejor_puntuacion, (520, ALTO_PANTALLA-190))
 
-        puntos_nivel_tres = leer_archivo(archivo_puntos_lvl3)
-        self.texto_mejor_puntuacion = self.fuente_mejor_puntuacion.render("Best Score: " + str(puntos_nivel_tres), True, (255,255,255))
-        PANTALLA_JUEGO.blit(self.texto_mejor_puntuacion, (870, ALTO_PANTALLA-190))
+        #puntos_nivel_tres = leer_archivo_puntos(archivo_puntos_lvl3)
+        puntos_nivel_tres = traer_puntos_maximos_de_base(cursor_nivel_tres)
+        if puntos_nivel_tres:
+            self.texto_mejor_puntuacion = self.fuente_mejor_puntuacion.render("Best Score: " + str(puntos_nivel_tres), True, (255,255,255))
+            PANTALLA_JUEGO.blit(self.texto_mejor_puntuacion, (870, ALTO_PANTALLA-190))
+
+        PANTALLA_JUEGO.blit(self.imagen_instrucciones, (ANCHO_PANTALLA-400, ALTO_PANTALLA-400))
 
 
     def actualizar_seleccion(self, mouse_pos):
@@ -60,14 +71,16 @@ class Menu:
             if opcion.esta_seleccionado(mouse_pos):
                 self.seleccion = opcion.texto
 
-    def sonido(self, arrancar=False, parar=False, inicio_nivel=False):
+    def sonido(self, sonidos, arrancar=False, parar=False, inicio_nivel=False):
         if arrancar:    
-            SONIDO_FONDO_MENU.play()
+            sonidos.SONIDO_FONDO_MENU.play()
         if parar:
-            SONIDO_FONDO_MENU.stop()
+            sonidos.SONIDO_FONDO_MENU.stop()
 
         if inicio_nivel:
-            SONIDO_INICIAR_NIVEL.play()
+            sonidos.SONIDO_INICIAR_NIVEL.play()
+    
+        PANTALLA_JUEGO.blit(sonidos.texto_volumen, (ANCHO_PANTALLA-280, 15))
 
 
 # Clase para representar una opción del menú

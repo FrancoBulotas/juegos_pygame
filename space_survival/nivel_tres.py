@@ -5,7 +5,7 @@ from personaje import Personaje, BalaExtra, BalaExtraMejorada
 from vida import Vida, VidaExtra
 from enemigos import NaveAlien
 from general_niveles import GeneralNiveles
-from archivos import guardar_archivo, obtener_nombre_archivo
+from utilidades import *
 
 
 class NivelTres:
@@ -64,19 +64,19 @@ class NivelTres:
         self.contador_puntos = 0
 
         self.flag_archivo_guardado = False
-        self.archivo_puntos = obtener_nombre_archivo(nivel_tres=True)
+        self.archivo_puntos = obtener_nombre_archivo_puntos(nivel_tres=True)
         self.general_nivel = GeneralNiveles(self.personaje)
 
 
-    def desarrollo(self, mouse_pos, nivel):
+    def desarrollo(self, mouse_pos, nivel, sonidos, cursor, conexion):
         """
         - Se encarga de la ejecucion principal del nivel dos.
         - No recibe nada.
         - Retorna si el nivel termino o no, y el resultado. (valores booleanos)
         """
         self.nivel = nivel
-        self.verificar_colisiones(mouse_pos)
-        self.general_nivel.eleccion_menu_fin(mouse_pos, self.nivel)
+        self.verificar_colisiones(sonidos)
+        self.general_nivel.eleccion_menu_fin(sonidos, mouse_pos, self.nivel)
 
         if not self.juego_en_pausa and not self.nivel_terminado:
             # Chequear variables del estado del juego
@@ -100,32 +100,32 @@ class NivelTres:
             self.grupo_balas_personaje_mejoradas.draw(PANTALLA_JUEGO)
             
             # Actualizar la posición de personajes
-            self.nave_alien_violeta.actualizar()
-            self.nave_alien_plateado.actualizar()
+            if self.nave_alien_violeta.vida >= 0:
+                self.nave_alien_violeta.actualizar(sonidos)
+            if self.nave_alien_plateado.vida >= 0:
+                self.nave_alien_plateado.actualizar(sonidos)
             
             # Creacion balas nave alien
-            # tiempo_inicial = TIEMPO_NIVEL
-            # if self.cronometro > tiempo_inicial-1:
-            #     self.nave_alien.crear_bala(self.grupo_balas_alien, self.personaje)
             if self.cronometro_previo - self.cronometro >= self.intervalo:
                 self.nave_alien_violeta.crear_bala(self.grupo_balas_alien_violeta, self.personaje)
                 self.nave_alien_plateado.crear_bala(self.grupo_balas_alien_plateado, self.personaje)
                 self.cronometro_previo = self.cronometro
 
-            self.grupo_balas_alien_plateado.update()
+            self.grupo_balas_alien_plateado.update(sonidos)
             self.grupo_balas_alien_plateado.draw(PANTALLA_JUEGO)
 
-            self.grupo_balas_alien_violeta.update()
+            self.grupo_balas_alien_violeta.update(sonidos)
             self.grupo_balas_alien_violeta.draw(PANTALLA_JUEGO)
 
-            self.personaje.chequeo_teclas(self.grupo_balas_personaje, self.vida_personaje, self.grupo_balas_personaje_mejoradas)
+            self.personaje.chequeo_teclas(sonidos, self.grupo_balas_personaje, self.vida_personaje, self.grupo_balas_personaje_mejoradas)
 
         if self.nivel_terminado:
             if not self.flag_archivo_guardado:
-                self.archivo_puntos = guardar_archivo(nivel.contador_puntos, nivel_tres=True)
+                #self.archivo_puntos = guardar_archivo_puntos(nivel.contador_puntos, nivel_tres=True)
+                guardar_puntos_en_base(self.nivel.contador_puntos, cursor, conexion)
                 self.flag_archivo_guardado = True
 
-            self.general_nivel.dibujar_menu_fin(self.nivel)
+            self.general_nivel.dibujar_menu_fin(self.nivel, sonidos)
             # Esto es para que se pueda volver a jugar dandole a volver a jugar
             self.nivel.ingreso_nivel = True
 
@@ -159,11 +159,18 @@ class NivelTres:
 
     def generar_instancia_nivel(self):
         return NivelTres()
+    
+    # def chequeo_vida_naves(self):
+    #     if self.nave_alien_violeta.vida <= 0:
+    #         del self.nave_alien_violeta
+    #     if self.nave_alien_plateado.vida <= 0:
+    #         del self.nave_alien_plateado
+        
 
-    def verificar_colisiones(self, mouse_pos) -> None:
+    def verificar_colisiones(self, sonidos) -> None:
         """
         - Se encarga de verificar si hay colisiones entre los objetos.
-        - Recibe la posicion del mouse.
+        - Recibe la instancia del sonido.
         - No retorna nada
         """
         # colision entre personaje y nave alien_violeta
@@ -245,7 +252,7 @@ class NivelTres:
                 # Puntos por matar nave alien
                 if self.nave_alien_violeta.vida == 0:
                     self.contador_puntos += PUNTOS_POR_NAVE_ALIEN
-                SONIDO_GOLPE_MISIL.play()
+                sonidos.SONIDO_GOLPE_MISIL.play()
                 bala_personaje.kill()
 
             for bala_alien in self.grupo_balas_alien_violeta:
@@ -271,6 +278,7 @@ class NivelTres:
                 # Puntos por matar nave alien
                 if self.nave_alien_violeta.vida == 0:
                     self.contador_puntos += PUNTOS_POR_NAVE_ALIEN
+                    sonidos.SONIDO_GOLPE_MISIL_MEJORADO.play()
                 bala_personaje_mejorada.kill()
 
             for bala_alien in self.grupo_balas_alien_violeta:
@@ -282,6 +290,7 @@ class NivelTres:
                     # Puntos por matar alien
                     if bala_alien.vida == 0:
                         self.contador_puntos += PUNTOS_POR_ALIEN
+                    sonidos.SONIDO_GOLPE_MISIL_MEJORADO.play()
 
         # Verifico si la bala del personaje le pega al alien_plateado y a sus balas
         for bala_personaje in self.grupo_balas_personaje:    
@@ -293,7 +302,7 @@ class NivelTres:
                 # Puntos por matar nave alien
                 if self.nave_alien_plateado.vida == 0:
                     self.contador_puntos += PUNTOS_POR_NAVE_ALIEN
-                SONIDO_GOLPE_MISIL.play()
+                sonidos.SONIDO_GOLPE_MISIL.play()
                 bala_personaje.kill()
 
             for bala_alien in self.grupo_balas_alien_plateado:
@@ -319,6 +328,7 @@ class NivelTres:
                 # Puntos por matar nave alien
                 if self.nave_alien_plateado.vida == 0:
                     self.contador_puntos += PUNTOS_POR_NAVE_ALIEN
+                sonidos.SONIDO_GOLPE_MISIL_MEJORADO.play()
                 bala_personaje_mejorada.kill()
 
             for bala_alien in self.grupo_balas_alien_plateado:
@@ -330,6 +340,7 @@ class NivelTres:
                     # Puntos por matar alien
                     if bala_alien.vida == 0:
                         self.contador_puntos += PUNTOS_POR_ALIEN
+                    sonidos.SONIDO_GOLPE_MISIL_MEJORADO.play()
 
         # # Click en pausa
         # if self.general_nivel.rect_pausa.collidepoint(mouse_pos) or self.juego_en_pausa:

@@ -23,14 +23,14 @@ class NaveAlien(pygame.sprite.Sprite):
         self.velocidad_y = -1 * VELOCIDAD_NAVE_ALIEN
 
         self.colision = False
-        self.vida = VIDAS_NAVE_ALIEN_VIOLETA
+        self.vida = VIDAS_NAVE_ALIEN
         self.vidas_nave = pygame.sprite.Group()
         for i in range(self.vida):
             vida = Vida()
             self.vidas_nave.add(vida)
 
         
-    def actualizar(self):
+    def actualizar(self, sonidos):
         self.rect.x += self.velocidad_x
         self.rect.y += self.velocidad_y
 
@@ -49,11 +49,11 @@ class NaveAlien(pygame.sprite.Sprite):
         if self.rect.bottom > ALTO_PANTALLA:
             self.velocidad_y *= -1
 
-        if self.vida <= 0:
-            SONIDO_EXPLOSION_NAVE.play()
-            self.kill()
-        else:
-            PANTALLA_JUEGO.blit(self.image, self.rect)
+        if self.vida == 0:
+            sonidos.SONIDO_EXPLOSION_NAVE.play()    
+            self.vida -= 1
+    
+        PANTALLA_JUEGO.blit(self.image, self.rect)
     
     def crear_bala(self, grupo_balas, personaje):
         """
@@ -107,8 +107,6 @@ class Misil(pygame.sprite.Sprite):
             self.rect.x = random.randint(0, ANCHO_PANTALLA - self.rect.width)
             self.rect.y = random.randint((ALTO_PANTALLA - 300), ALTO_PANTALLA - self.rect.height)
         
-                
-            
         # self.rect_horizontal = self.imagen_derecha.get_rect()
         # self.rect_vertical = self.imagen_arriba.get_rect()
         self.objetivo = None
@@ -122,7 +120,7 @@ class Misil(pygame.sprite.Sprite):
                 vida = Vida()
                 self.vidas_misil.add(vida)
 
-    def update(self):
+    def update(self, sonidos):
         if self.objetivo:
             # Para que siga al personaje
             direccion = pygame.math.Vector2(self.objetivo.rect.center) - pygame.math.Vector2(self.rect.center)
@@ -163,5 +161,5 @@ class Misil(pygame.sprite.Sprite):
                 self.kill()
         
         if self.vida <= 0:
-            SONIDO_EXPLOSION_MISIL.play()
+            sonidos.SONIDO_EXPLOSION_MISIL.play()
             self.kill()

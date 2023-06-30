@@ -5,7 +5,7 @@ from personaje import Personaje, BalaExtra
 from vida import Vida
 from enemigos import Misil
 from general_niveles import GeneralNiveles
-from archivos import guardar_archivo, obtener_nombre_archivo
+from utilidades import *
 
 
 class NivelUno:
@@ -46,19 +46,19 @@ class NivelUno:
 
         self.juego_en_pausa = False
         self.flag_archivo_guardado = False
-        self.archivo_puntos = obtener_nombre_archivo(nivel_uno=True)
+        self.archivo_puntos = obtener_nombre_archivo_puntos(nivel_uno=True)
         self.general_nivel = GeneralNiveles(self.personaje)
         
 
-    def desarrollo(self, mouse_pos, nivel) -> bool:
+    def desarrollo(self, mouse_pos, nivel, sonidos, cursor, conexion) -> bool:
         """
         - Se encarga de la ejecucion principal del nivel uno.
         - No recibe nada.
         - Retorna si el nivel termino o no, y el resultado. (valores booleanos)
         """
         self.nivel = nivel
-        self.verificar_colisiones(mouse_pos)
-        self.general_nivel.eleccion_menu_fin(mouse_pos, self.nivel)
+        self.verificar_colisiones(sonidos)
+        self.general_nivel.eleccion_menu_fin(sonidos, mouse_pos, self.nivel)
 
         if not self.juego_en_pausa and not self.nivel_terminado:
             # Chequear variables del estado del juego
@@ -73,7 +73,7 @@ class NivelUno:
             self.grupo_balas_personaje.update()
             # Actualizar y dibujar los misiles, balas y vidas
              
-            self.grupo_misiles.update()
+            self.grupo_misiles.update(sonidos)
 
             for i in range(len(self.vidas_personaje)):
                 self.vidas_personaje.update(self.personaje, i)
@@ -82,14 +82,15 @@ class NivelUno:
             self.grupo_balas_personaje.draw(PANTALLA_JUEGO)
             
             # Actualizar la posición del personaje
-            self.personaje.chequeo_teclas(self.grupo_balas_personaje, self.vida_personaje)
+            self.personaje.chequeo_teclas(sonidos, self.grupo_balas_personaje, self.vida_personaje)
 
         if self.nivel_terminado:
             if not self.flag_archivo_guardado:
-                self.archivo_puntos = guardar_archivo(self.nivel.contador_puntos, nivel_uno=True)
+                #self.archivo_puntos = guardar_archivo_puntos(self.nivel.contador_puntos, nivel_uno=True)
+                guardar_puntos_en_base(self.nivel.contador_puntos, cursor, conexion)
                 self.flag_archivo_guardado = True
 
-            self.general_nivel.dibujar_menu_fin(self.nivel)
+            self.general_nivel.dibujar_menu_fin(self.nivel, sonidos)
             # Esto es para que se pueda volver a jugar dandole a volver a jugar
             self.nivel.ingreso_nivel = True
 
@@ -126,10 +127,10 @@ class NivelUno:
     def generar_instancia_nivel(self):
         return NivelUno()
 
-    def verificar_colisiones(self, mouse_pos) -> None:
+    def verificar_colisiones(self, sonidos) -> None:
         """
         - Se encarga de verificar si hay colisiones entre los objetos.
-        - Recibe la posicion del mouse.
+        - Recibe la instancia del sonido.
         - No retorna nada
         """
         # Obtener la posición del personaje y los objetos
@@ -157,7 +158,7 @@ class NivelUno:
                     misil.vida -= 1
                     for vida in misil.vidas_misil: # Eliminamos la imagen de la vida del misil al que el personaje impacta con sus balas
                         vida.kill()
-                        SONIDO_GOLPE_MISIL.play()
+                        sonidos.SONIDO_GOLPE_MISIL.play()
                         break
                     # sumamos puntos al matar al misil
                     if misil.vida == 0:

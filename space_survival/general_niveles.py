@@ -53,6 +53,7 @@ class GeneralNiveles:
         self.imagen_municion_mejorada = pygame.image.load(RECURSOS + "personaje\\municion-mejorada-extra.png").convert_alpha()
         self.imagen_municion_mejorada = pygame.transform.scale(self.imagen_municion_mejorada, (50,50))
 
+
     def dibujar_barra_superior(self, nivel, nivel_tres=False) -> None:
         """
         - Se encarga de dibujar la barra superior del nivel.
@@ -82,7 +83,7 @@ class GeneralNiveles:
         PANTALLA_JUEGO.blit(self.imagen_pausa, self.rect_pausa)
 
 
-    def dibujar_menu_fin(self, nivel):
+    def dibujar_menu_fin(self, nivel, sonidos):
         """
         - Se encarga de dibujar el resultado del nivel, y de verificar si clickea volver a jugar o ir al menu.
         - Recibe la instancia del nivel.
@@ -97,6 +98,7 @@ class GeneralNiveles:
         if nivel.juego_en_pausa and nivel.nivel_terminado:    
             PANTALLA_JUEGO.blit(self.imagen_paused, ((ANCHO_PANTALLA // 2) - 125, ALTO_PANTALLA // 2 - 150))        
             PANTALLA_JUEGO.blit(self.imagen_play, self.rect_play)
+            PANTALLA_JUEGO.blit(sonidos.texto_volumen, ((ANCHO_PANTALLA // 2) - 90, ALTO_PANTALLA // 2 - 20))
 
         if nivel.resultado_ganador and not nivel.juego_en_pausa:
             PANTALLA_JUEGO.blit(self.imagen_ganador, ((ANCHO_PANTALLA // 2) - 170, ALTO_PANTALLA // 2 - 150))
@@ -105,25 +107,27 @@ class GeneralNiveles:
             PANTALLA_JUEGO.blit(self.imagen_perdedor, ((ANCHO_PANTALLA // 2) - 270, ALTO_PANTALLA // 2 - 150))
 
         PANTALLA_JUEGO.blit(self.texto_puntos, ((ANCHO_PANTALLA // 2) - 210, ALTO_PANTALLA // 2 + 10))
-        PANTALLA_JUEGO.blit(self.texto_cant_puntos, ((ANCHO_PANTALLA // 2) + 100, ALTO_PANTALLA // 2 + 10))
+        PANTALLA_JUEGO.blit(self.texto_cant_puntos, ((ANCHO_PANTALLA // 2) + 150, ALTO_PANTALLA // 2 + 10))
+
+        pygame.draw.rect(PANTALLA_JUEGO, (0,0,0), (ANCHO_PANTALLA-280, 12, 140, 40))
 
     
-    def eleccion_menu_fin(self, mouse_pos, nivel):
+    def eleccion_menu_fin(self, sonidos, mouse_pos, nivel):
         if pygame.mouse.get_pressed()[0] and nivel.nivel_terminado:
             if self.rect_volver_a_jugar.collidepoint(mouse_pos):
-                SONIDO_HACIA_ATRAS.play()
+                self.sonido(sonidos, hacia_atras=True)
                 nivel.nivel = nivel.generar_instancia_nivel()                
                 nivel.menu_activo = False
                 nivel.nivel_terminado = False
 
             if self.rect_play.collidepoint(mouse_pos) and nivel.juego_en_pausa:
-                SONIDO_HACIA_ATRAS.play()
+                self.sonido(sonidos, hacia_atras=True)
                 nivel.juego_en_pausa = False
                 nivel.menu_activo = False
                 nivel.nivel_terminado = False
                 
             if self.rect_volver_al_menu.collidepoint(mouse_pos):
-                SONIDO_HACIA_ATRAS.play()
+                self.sonido(sonidos, hacia_atras=True)
                 nivel.nivel = nivel.generar_instancia_nivel()
                 nivel.menu_activo = True
                 nivel.nivel_terminado = False
@@ -134,10 +138,9 @@ class GeneralNiveles:
             nivel.nivel_terminado = True
 
 
-
-    def sonido(self,hacia_atras=False):
+    def sonido(self, sonidos, hacia_atras=False):
         if hacia_atras:
-            SONIDO_HACIA_ATRAS.play()
+            sonidos.SONIDO_HACIA_ATRAS.play()
 
 
     # def verificar_colisiones(self, mouse_pos, nivel) -> None:

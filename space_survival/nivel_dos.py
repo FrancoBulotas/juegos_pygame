@@ -5,7 +5,7 @@ from personaje import Personaje, BalaExtra
 from vida import Vida, VidaExtra
 from enemigos import NaveAlien, Misil
 from general_niveles import GeneralNiveles
-from archivos import guardar_archivo, obtener_nombre_archivo
+from utilidades import *
 
 class NivelDos:
     def __init__(self) -> None:
@@ -41,7 +41,7 @@ class NivelDos:
         self.cronometro_previo_nave = TIEMPO_NIVEL
         self.cronometro_previo_misiles = TIEMPO_NIVEL
         self.intervalo_para_nave = 1
-        self.intervalo_para_misiles = 5
+        self.intervalo_para_asteroides = 3
 
         self.menu_activo = False
         self.nivel_terminado = False
@@ -56,19 +56,19 @@ class NivelDos:
         self.contador_puntos = 0
 
         self.flag_archivo_guardado = False
-        self.archivo_puntos = obtener_nombre_archivo(nivel_dos=True)
+        self.archivo_puntos = obtener_nombre_archivo_puntos(nivel_dos=True)
         self.general_nivel = GeneralNiveles(self.personaje)
 
 
-    def desarrollo(self, mouse_pos, nivel):
+    def desarrollo(self, mouse_pos, nivel, sonidos, cursor, conexion):
         """
         - Se encarga de la ejecucion principal del nivel dos.
         - No recibe nada.
         - Retorna si el nivel termino o no, y el resultado. (valores booleanos)
         """
         self.nivel = nivel
-        self.verificar_colisiones(mouse_pos)
-        self.general_nivel.eleccion_menu_fin(mouse_pos, self.nivel)
+        self.verificar_colisiones(sonidos)
+        self.general_nivel.eleccion_menu_fin(sonidos, mouse_pos, self.nivel)
 
         if not self.juego_en_pausa and not self.nivel_terminado:
  
@@ -93,32 +93,33 @@ class NivelDos:
             # Actualizar la posición de personajes
             if self.nave_alien.vida > 0:
                 #self.nave_alien.kill()
-                self.nave_alien.actualizar()
+                self.nave_alien.actualizar(sonidos)
 
             # Chequeo los intervalos
             if self.cronometro_previo_nave - self.cronometro >= self.intervalo_para_nave:
                 self.nave_alien.crear_bala(self.grupo_balas_alien, self.personaje)
                 self.cronometro_previo_nave = self.cronometro
 
-            if self.cronometro_previo_misiles - self.cronometro >= self.intervalo_para_misiles:
+            if self.cronometro_previo_misiles - self.cronometro >= self.intervalo_para_asteroides:
                 misil = Misil(nivel_dos=True)
                 self.grupo_asteroides.add(misil)
                 self.cronometro_previo_misiles = self.cronometro
 
-            self.grupo_balas_alien.update()
+            self.grupo_balas_alien.update(sonidos)
             self.grupo_balas_alien.draw(PANTALLA_JUEGO)
 
-            self.grupo_asteroides.update()
+            self.grupo_asteroides.update(sonidos)
             self.grupo_asteroides.draw(PANTALLA_JUEGO)
 
-            self.personaje.chequeo_teclas(self.grupo_balas_personaje, self.vida_personaje)
+            self.personaje.chequeo_teclas(sonidos, self.grupo_balas_personaje, self.vida_personaje)
         
         if self.nivel_terminado:
             if not self.flag_archivo_guardado:
-                self.archivo_puntos = guardar_archivo(nivel.contador_puntos, nivel_dos=True)
+                #self.archivo_puntos = guardar_archivo_puntos(nivel.contador_puntos, nivel_dos=True)
+                guardar_puntos_en_base(self.nivel.contador_puntos, cursor, conexion)
                 self.flag_archivo_guardado = True
 
-            self.general_nivel.dibujar_menu_fin(self.nivel)
+            self.general_nivel.dibujar_menu_fin(self.nivel, sonidos)
             # Esto es para que se pueda volver a jugar dandole a volver a jugar
             self.nivel.ingreso_nivel = True
 
@@ -153,10 +154,10 @@ class NivelDos:
     def generar_instancia_nivel(self):
         return NivelDos()
 
-    def verificar_colisiones(self, mouse_pos) -> None:
+    def verificar_colisiones(self, sonidos) -> None:
         """
         - Se encarga de verificar si hay colisiones entre los objetos.
-        - Recibe la posicion del mouse.
+        - Recibe la instancia del sonido.
         - No retorna nada
         """
         # colision entre personaje y nave alien
@@ -209,7 +210,7 @@ class NivelDos:
                 if self.nave_alien.vida == 0:
                     self.contador_puntos += PUNTOS_POR_NAVE_ALIEN
                 
-                SONIDO_GOLPE_MISIL.play()
+                sonidos.SONIDO_GOLPE_MISIL.play()
                 bala_personaje.kill()
 
             for bala_alien in self.grupo_balas_alien:
