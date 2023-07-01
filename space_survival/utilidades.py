@@ -143,21 +143,14 @@ def crear_base_y_cursor(nivel):
         return conexion, cursor
 
 
-def guardar_puntos_en_base(puntos, cursor, eliminaciones_misil=0, eliminaciones_alien=0, eliminaciones_nave_alien=0):    
-    #cursor.execute("INSERT INTO nivel (puntos) VALUES (?)", (puntos,))
-    # if misil:
+def guardar_datos_en_base(puntos, cursor, eliminaciones_misil=0, eliminaciones_alien=0, eliminaciones_nave_alien=0):    
     cursor.execute("INSERT INTO nivel (puntos, eliminaciones_misil, eliminaciones_alien, eliminaciones_nave_alien) VALUES (?, ?, ?, ?)", (puntos, eliminaciones_misil, eliminaciones_alien, eliminaciones_nave_alien,))
-    # if alien:
-    #     cursor.execute("INSERT INTO nivel (puntos, eliminaciones_alien) VALUES (?, ?)", (puntos, eliminaciones,))
-    # if nave_alien:
-    #     cursor.execute("INSERT INTO nivel (puntos, eliminaciones_nave_alien) VALUES (?, ?)", (puntos, eliminaciones,))
 
 def traer_puntos_maximos_de_base(cursor):
     cursor.execute("SELECT MAX(puntos) FROM nivel")
     return cursor.fetchone()[0]
 
 def suma_cantidad_eliminaciones(cursor, misil=False, alien=False, nave_alien=False):
-    # Obtener el último valor de una tabla
     if misil:
         cursor.execute("SELECT SUM(eliminaciones_misil) FROM nivel")
         resultado = cursor.fetchone()[0]
@@ -165,7 +158,6 @@ def suma_cantidad_eliminaciones(cursor, misil=False, alien=False, nave_alien=Fal
             return 0
         else:
             return resultado   
-    # ADAPTAR A NIVEL 2 Y 3
     if alien:
         cursor.execute("SELECT SUM(eliminaciones_alien) FROM nivel")
         resultado = cursor.fetchone()[0]
@@ -180,14 +172,7 @@ def suma_cantidad_eliminaciones(cursor, misil=False, alien=False, nave_alien=Fal
             return 0
         else:
             return resultado
-    
-# def guardar_eliminaciones_en_base(cursor, eliminaciones, misil=False, alien=False, nave_alien=False):
-#     if misil:
-#         cursor.execute("INSERT INTO nivel (eliminaciones_misil) VALUES (?)", (eliminaciones,))
-#     if alien:
-#         cursor.execute("INSERT INTO nivel (eliminaciones_alien) VALUES (?)", (eliminaciones,))
-#     if nave_alien:
-#         cursor.execute("INSERT INTO nivel (eliminaciones_nave_alien) VALUES (?)", (eliminaciones,))
+        
 
 def cantidad_filas_base(cursor):
     cursor.execute("SELECT * FROM nivel")

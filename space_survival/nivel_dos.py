@@ -118,7 +118,7 @@ class NivelDos:
         if self.nivel_terminado:
             if not self.flag_archivo_guardado:
                 #self.archivo_puntos = guardar_archivo_puntos(nivel.contador_puntos, nivel_dos=True)
-                guardar_puntos_en_base(self.nivel.contador_puntos, cursor, eliminaciones_alien=self.contador_eliminaciones_aliens, eliminaciones_nave_alien=self.contador_eliminaciones_naves)
+                guardar_datos_en_base(self.nivel.contador_puntos, cursor, eliminaciones_alien=self.contador_eliminaciones_aliens, eliminaciones_nave_alien=self.contador_eliminaciones_naves)
                 conexion.commit()
                 self.flag_archivo_guardado = True
 

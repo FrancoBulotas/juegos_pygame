@@ -1,10 +1,7 @@
 import pygame
 import pyautogui
-from utilidades import generar_sonido
-#from main import volumen
 
 ANCHO_PANTALLA, ALTO_PANTALLA = pyautogui.size()
-
 # ANCHO_PANTALLA = 1200
 # ALTO_PANTALLA = 885
 
@@ -40,17 +37,6 @@ PUNTOS_POR_MISIL = 50
 PUNTOS_POR_ALIEN = 25
 PUNTOS_POR_NAVE_ALIEN = 300
 
-# Sonidos
-# volumen = 0.1
-# SONIDO_INICIAR_NIVEL = generar_sonido(RECURSOS + "sonidos\\menu\\start_button.wav", volumen) # 1 
-# SONIDO_HACIA_ATRAS = generar_sonido(RECURSOS + "sonidos\\menu\\back1.wav", volumen) # 0.1
-# SONIDO_FONDO_MENU = generar_sonido(RECURSOS + "sonidos\\musica-fondo-menu.wav", volumen) # 0.03
-# SONIDO_DISPARO_PERSONAJE = generar_sonido(RECURSOS + "sonidos\\switch_to_fire_bomb.wav", volumen) # 0.08
-# SONIDO_DISPARO_PERSONAJE_MEJORADO = generar_sonido(RECURSOS + "sonidos\\rocket_h3_3.wav", volumen) # 0.08
-# SONIDO_EXPLOSION_MISIL = generar_sonido(RECURSOS + "sonidos\\h3_small_expl4.wav", volumen) # 0.08
-# SONIDO_GOLPE_MISIL = generar_sonido(RECURSOS + "sonidos\\rocket_expl_lod_far1.wav", volumen) # 0.08
-# SONIDO_GOLPE_MISIL_MEJORADO = generar_sonido(RECURSOS + "sonidos\\rocket_launcher_lod_far3.wav", volumen) # 0.08
-# SONIDO_EXPLOSION_NAVE = generar_sonido(RECURSOS + "sonidos\\big_explosions3.wav", volumen) # 0.03
 
 
 
