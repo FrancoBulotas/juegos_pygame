@@ -86,7 +86,7 @@ class NivelUno:
             self.personaje.chequeo_teclas(sonidos, self.grupo_balas_personaje, self.vida_personaje)
 
         if self.nivel_terminado:
-            if not self.flag_archivo_guardado:
+            if not self.flag_archivo_guardado and not self.juego_en_pausa:
                 #self.archivo_puntos = guardar_archivo_puntos(self.nivel.contador_puntos, nivel_uno=True)
                 guardar_datos_en_base(self.nivel.contador_puntos, cursor, eliminaciones_misil=self.contador_eliminaciones)
                 conexion.commit()
