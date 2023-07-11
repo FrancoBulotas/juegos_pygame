@@ -91,8 +91,8 @@ class Misil(pygame.sprite.Sprite):
             self.rect.x = random.randint(0, ANCHO_PANTALLA - self.rect.width)
             self.rect.y = ALTO_PANTALLA
         else:
-            self.image = pygame.image.load(RECURSOS + "enemigos\\cohete-arriba.png").convert_alpha()
-            self.image = pygame.transform.scale(self.image, (40, 80))
+            self.image = pygame.image.load(RECURSOS + "enemigos\\alien-rojo.png").convert_alpha()
+            self.image = pygame.transform.scale(self.image, (60, 60))
             # Horizontal
             self.imagen_derecha = pygame.image.load(RECURSOS + "enemigos\\cohete-derecha.png").convert_alpha()
             self.imagen_derecha = pygame.transform.scale(self.imagen_derecha, (80, 40))
@@ -143,19 +143,19 @@ class Misil(pygame.sprite.Sprite):
             if not self.bala_alien:
                 if self.rect.left < 0:
                     self.velocidad_x *= -1
-                    self.image = self.imagen_derecha
+                    #self.image = self.imagen_derecha
 
                 if self.rect.right > ANCHO_PANTALLA:
                     self.velocidad_x *= -1
-                    self.image = self.imagen_izquierda
+                   # self.image = self.imagen_izquierda
 
                 if self.rect.top < 70:
                     self.velocidad_y *= -1
-                    self.image = self.imagen_abajo
+                    #self.image = self.imagen_abajo
 
                 if self.rect.bottom > ALTO_PANTALLA:
                     self.velocidad_y *= -1
-                    self.image = self.imagen_arriba
+                    #self.image = self.imagen_arriba
         else:
             if self.rect.top < 70:
                 self.kill()

@@ -6,7 +6,6 @@ from nivel_uno import NivelUno
 from nivel_dos import NivelDos
 from nivel_tres import NivelTres
 from utilidades import *
-import sqlite3
 
 
 # Inicializar Pygame
@@ -18,9 +17,9 @@ menu = Menu(opciones_menu)
 volumen = leer_archivo_volumen()
 sonidos = Sonidos(volumen)
 # Generamos niveles
-nivel_uno = NivelUno()
-nivel_dos = NivelDos()
-nivel_tres = NivelTres()
+nivel_uno = NivelUno(sonidos)
+nivel_dos = NivelDos(sonidos)
+nivel_tres = NivelTres(sonidos)
 # Textos
 #entrada_texto = pygame.input.TextInput()
 # Tiempo
@@ -98,23 +97,24 @@ while juego_corriendo:
     if menu_activo:
         menu.dibujar(cursor_nivel_uno, cursor_nivel_dos, cursor_nivel_tres) 
         menu.sonido(sonidos, arrancar=True)
+        sonidos.SONIDO_FONDO_NIVEL.stop()
         if mostrar_estadisticas:
             menu.dibujar_menu_estadisticas(cursor_nivel_uno, cursor_nivel_dos, cursor_nivel_tres)
     else:
-        menu.sonido(sonidos, parar=True)  
+        menu.sonido(sonidos, parar=True) 
         # NIVEL UNO
         if nivel_uno.ingreso_nivel:
-            nivel_uno.desarrollo(mouse_pos, nivel_uno, sonidos, cursor_nivel_uno, conexion_nivel_uno)
+            nivel_uno.desarrollo(mouse_pos, nivel_uno, cursor_nivel_uno, conexion_nivel_uno)
             menu_activo = nivel_uno.menu_activo
             nivel_uno = nivel_uno.nivel
         # NIVEL DOS 
         if nivel_dos.ingreso_nivel:
-            nivel_dos.desarrollo(mouse_pos, nivel_dos, sonidos, cursor_nivel_dos, conexion_nivel_dos)
+            nivel_dos.desarrollo(mouse_pos, nivel_dos, cursor_nivel_dos, conexion_nivel_dos)
             menu_activo = nivel_dos.menu_activo
             nivel_dos = nivel_dos.nivel
         # NIVEL TRES
         if nivel_tres.ingreso_nivel:
-            nivel_tres.desarrollo(mouse_pos, nivel_tres, sonidos, cursor_nivel_tres, conexion_nivel_tres)
+            nivel_tres.desarrollo(mouse_pos, nivel_tres, cursor_nivel_tres, conexion_nivel_tres)
             menu_activo = nivel_tres.menu_activo
             nivel_tres = nivel_tres.nivel
 

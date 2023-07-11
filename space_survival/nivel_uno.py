@@ -9,7 +9,7 @@ from utilidades import *
 
 
 class NivelUno:
-    def __init__(self) -> None:
+    def __init__(self, sonidos) -> None:
         self.fondo = pygame.image.load(RECURSOS + "fondo_niveles\\fondo-nivel-uno.png").convert_alpha()
         self.fondo = pygame.transform.scale(self.fondo, (ANCHO_PANTALLA, ALTO_PANTALLA))
         # Crear el personaje
@@ -48,18 +48,20 @@ class NivelUno:
         self.juego_en_pausa = False
         self.flag_archivo_guardado = False
         self.archivo_puntos = obtener_nombre_archivo_puntos(nivel_uno=True)
-        self.general_nivel = GeneralNiveles(self.personaje)
+
+        self.sonidos = sonidos
+        self.general_nivel = GeneralNiveles(self.personaje, sonidos)
         
 
-    def desarrollo(self, mouse_pos, nivel, sonidos, cursor, conexion) -> bool:
+    def desarrollo(self, mouse_pos, nivel, cursor, conexion) -> bool:
         """
         - Se encarga de la ejecucion principal del nivel uno.
         - No recibe nada.
         - Retorna si el nivel termino o no, y el resultado. (valores booleanos)
         """
         self.nivel = nivel
-        self.verificar_colisiones(sonidos)
-        self.general_nivel.eleccion_menu_fin(sonidos, mouse_pos, self.nivel)
+        self.verificar_colisiones()
+        self.general_nivel.eleccion_menu_fin(self.sonidos, mouse_pos, self.nivel)
 
         if not self.juego_en_pausa and not self.nivel_terminado:
             # Chequear variables del estado del juego
@@ -74,7 +76,7 @@ class NivelUno:
             self.grupo_balas_personaje.update()
             # Actualizar y dibujar los misiles, balas y vidas
              
-            self.grupo_misiles.update(sonidos)
+            self.grupo_misiles.update(self.sonidos)
 
             for i in range(len(self.vidas_personaje)):
                 self.vidas_personaje.update(self.personaje, i)
@@ -83,7 +85,7 @@ class NivelUno:
             self.grupo_balas_personaje.draw(PANTALLA_JUEGO)
             
             # Actualizar la posición del personaje
-            self.personaje.chequeo_teclas(sonidos, self.grupo_balas_personaje, self.vida_personaje)
+            self.personaje.chequeo_teclas(self.sonidos, self.grupo_balas_personaje, self.vida_personaje)
 
         if self.nivel_terminado:
             if not self.flag_archivo_guardado and not self.juego_en_pausa:
@@ -92,9 +94,11 @@ class NivelUno:
                 conexion.commit()
                 self.flag_archivo_guardado = True
 
-            self.general_nivel.dibujar_menu_fin(self.nivel, sonidos)
+            self.general_nivel.dibujar_menu_fin(self.nivel, self.sonidos)
             # Esto es para que se pueda volver a jugar dandole a volver a jugar
             self.nivel.ingreso_nivel = True
+
+        self.general_nivel.sonido(self.sonidos, fondo=True)
 
 
     def chequeo_estado_juego(self) -> None:
@@ -127,9 +131,9 @@ class NivelUno:
 
 
     def generar_instancia_nivel(self):
-        return NivelUno()
+        return NivelUno(self.sonidos)
 
-    def verificar_colisiones(self, sonidos) -> None:
+    def verificar_colisiones(self) -> None:
         """
         - Se encarga de verificar si hay colisiones entre los objetos.
         - Recibe la instancia del sonido.
@@ -143,6 +147,7 @@ class NivelUno:
                     vidas.kill()
                     break
                 self.vida_personaje -= 1
+                self.sonidos.SONIDO_GOLPE_A_PERSONAJE.play()
                 misil.colision = True
             # Si el misil no le esta pegando al personaje, misil.colision vuelve a false.
             if not pygame.sprite.collide_mask(self.personaje, misil): 
@@ -160,7 +165,7 @@ class NivelUno:
                     misil.vida -= 1
                     for vida in misil.vidas_misil: # Eliminamos la imagen de la vida del misil al que el personaje impacta con sus balas
                         vida.kill()
-                        sonidos.SONIDO_GOLPE_MISIL.play()
+                        self.sonidos.SONIDO_GOLPE_MISIL.play()
                         break
                     # sumamos puntos al matar al misil
                     if misil.vida == 0:

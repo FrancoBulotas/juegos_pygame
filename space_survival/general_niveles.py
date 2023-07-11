@@ -3,7 +3,7 @@ from constantes import *
 
 
 class GeneralNiveles:
-    def __init__(self, personaje) -> None:
+    def __init__(self, personaje, sonidos) -> None:
         self.personaje = personaje
 
         self.imagen_pausa = pygame.image.load(RECURSOS + "menu\\iconos\\pause.png").convert_alpha()
@@ -53,6 +53,7 @@ class GeneralNiveles:
         self.imagen_municion_mejorada = pygame.image.load(RECURSOS + "personaje\\municion-mejorada-extra.png").convert_alpha()
         self.imagen_municion_mejorada = pygame.transform.scale(self.imagen_municion_mejorada, (50,50))
 
+        self.sonidos = sonidos
 
     def dibujar_barra_superior(self, nivel, nivel_tres=False) -> None:
         """
@@ -61,6 +62,8 @@ class GeneralNiveles:
         - No retorna nada.
         """
         #self.cronometro = cronometro
+        #self.sonidos.SONIDO_FONDO_NIVEL.play()
+
         # Parte negra superior
         PANTALLA_JUEGO.blit(self.imagen_superior, (-150, -5))
 
@@ -138,9 +141,13 @@ class GeneralNiveles:
             nivel.nivel_terminado = True
 
 
-    def sonido(self, sonidos, hacia_atras=False):
+    def sonido(self, sonidos, hacia_atras=False, fondo = False):
         if hacia_atras:
             sonidos.SONIDO_HACIA_ATRAS.play()
+        
+        if fondo:
+            sonidos.SONIDO_FONDO_NIVEL.play()      
+        
 
 
     # def verificar_colisiones(self, mouse_pos, nivel) -> None:

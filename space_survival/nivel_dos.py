@@ -8,7 +8,7 @@ from general_niveles import GeneralNiveles
 from utilidades import *
 
 class NivelDos:
-    def __init__(self) -> None:
+    def __init__(self, sonidos) -> None:
         self.fondo = pygame.image.load(RECURSOS + "fondo_niveles\\fondo-nivel-dos.jpg").convert_alpha()
         self.fondo = pygame.transform.scale(self.fondo, (ANCHO_PANTALLA, ALTO_PANTALLA))
         # Crear el personaje
@@ -59,18 +59,19 @@ class NivelDos:
 
         self.flag_archivo_guardado = False
         self.archivo_puntos = obtener_nombre_archivo_puntos(nivel_dos=True)
-        self.general_nivel = GeneralNiveles(self.personaje)
+        self.sonidos = sonidos
+        self.general_nivel = GeneralNiveles(self.personaje, sonidos)
 
 
-    def desarrollo(self, mouse_pos, nivel, sonidos, cursor, conexion):
+    def desarrollo(self, mouse_pos, nivel, cursor, conexion):
         """
         - Se encarga de la ejecucion principal del nivel dos.
         - No recibe nada.
         - Retorna si el nivel termino o no, y el resultado. (valores booleanos)
         """
         self.nivel = nivel
-        self.verificar_colisiones(sonidos)
-        self.general_nivel.eleccion_menu_fin(sonidos, mouse_pos, self.nivel)
+        self.verificar_colisiones(self.sonidos)
+        self.general_nivel.eleccion_menu_fin(self.sonidos, mouse_pos, self.nivel)
 
         if not self.juego_en_pausa and not self.nivel_terminado:
  
@@ -95,7 +96,7 @@ class NivelDos:
             # Actualizar la posición de personajes
             if self.nave_alien.vida > 0:
                 #self.nave_alien.kill()
-                self.nave_alien.actualizar(sonidos)
+                self.nave_alien.actualizar(self.sonidos)
 
             # Chequeo los intervalos
             if self.cronometro_previo_nave - self.cronometro >= self.intervalo_para_nave:
@@ -107,13 +108,13 @@ class NivelDos:
                 self.grupo_asteroides.add(misil)
                 self.cronometro_previo_misiles = self.cronometro
 
-            self.grupo_balas_alien.update(sonidos)
+            self.grupo_balas_alien.update(self.sonidos)
             self.grupo_balas_alien.draw(PANTALLA_JUEGO)
 
-            self.grupo_asteroides.update(sonidos)
+            self.grupo_asteroides.update(self.sonidos)
             self.grupo_asteroides.draw(PANTALLA_JUEGO)
 
-            self.personaje.chequeo_teclas(sonidos, self.grupo_balas_personaje, self.vida_personaje)
+            self.personaje.chequeo_teclas(self.sonidos, self.grupo_balas_personaje, self.vida_personaje)
         
         if self.nivel_terminado:
             if not self.flag_archivo_guardado and not self.juego_en_pausa:
@@ -122,7 +123,7 @@ class NivelDos:
                 conexion.commit()
                 self.flag_archivo_guardado = True
 
-            self.general_nivel.dibujar_menu_fin(self.nivel, sonidos)
+            self.general_nivel.dibujar_menu_fin(self.nivel, self.sonidos)
             # Esto es para que se pueda volver a jugar dandole a volver a jugar
             self.nivel.ingreso_nivel = True
 
@@ -155,7 +156,7 @@ class NivelDos:
             self.resultado_ganador = False
 
     def generar_instancia_nivel(self):
-        return NivelDos()
+        return NivelDos(self.sonidos)
 
     def verificar_colisiones(self, sonidos) -> None:
         """
@@ -170,6 +171,7 @@ class NivelDos:
                 vidas.kill()
                 break
             self.vida_personaje -= 1
+            sonidos.SONIDO_GOLPE_A_PERSONAJE.play()
             self.nave_alien.colision = True
         if not pygame.sprite.collide_mask(self.personaje, self.nave_alien):
             self.nave_alien.colision = False
@@ -182,6 +184,7 @@ class NivelDos:
                     vidas.kill()
                     break
                 self.vida_personaje -= 1
+                sonidos.SONIDO_GOLPE_A_PERSONAJE.play()
                 bala.colision = True
                 bala.kill()
             # Si el bala no le esta pegando al personaje, bala.colision vuelve a false.
@@ -236,6 +239,7 @@ class NivelDos:
                     vidas.kill()
                     break
                 self.vida_personaje -= 1
+                sonidos.SONIDO_GOLPE_A_PERSONAJE.play()
                 asteroide.colision = True
             # Si el asteroide no le esta pegando al personaje, asteroide.colision vuelve a false.
             if not pygame.sprite.collide_mask(self.personaje, asteroide): 

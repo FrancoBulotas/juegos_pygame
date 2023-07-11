@@ -84,16 +84,19 @@ def generar_sonido(ruta: str, volumen: float):
 
 class Sonidos:
     def __init__(self, volumen) -> None:
+            pygame.mixer.set_num_channels(8)
             self.volumen = volumen
+            self.SONIDO_FONDO_NIVEL = generar_sonido(RECURSOS + "sonidos\\fondo_niveles.mp3", self.volumen) 
+            self.SONIDO_FONDO_MENU = generar_sonido(RECURSOS + "sonidos\\menu\\musica-fondo-menu.mp3", self.volumen) # 0.03
             self.SONIDO_INICIAR_NIVEL = generar_sonido(RECURSOS + "sonidos\\menu\\start_button.wav", self.volumen) # 1 
             self.SONIDO_HACIA_ATRAS = generar_sonido(RECURSOS + "sonidos\\menu\\back1.wav", self.volumen) # 0.1
-            self.SONIDO_FONDO_MENU = generar_sonido(RECURSOS + "sonidos\\musica-fondo-menu.wav", self.volumen) # 0.03
             self.SONIDO_DISPARO_PERSONAJE = generar_sonido(RECURSOS + "sonidos\\switch_to_fire_bomb.wav", self.volumen) # 0.08
             self.SONIDO_DISPARO_PERSONAJE_MEJORADO = generar_sonido(RECURSOS + "sonidos\\rocket_h3_3.wav", self.volumen) # 0.08
+            self.SONIDO_GOLPE_A_PERSONAJE = generar_sonido(RECURSOS + "sonidos\\impacto_personaje.wav", self.volumen)
             self.SONIDO_EXPLOSION_MISIL = generar_sonido(RECURSOS + "sonidos\\h3_small_expl4.wav", self.volumen) # 0.08
             self.SONIDO_GOLPE_MISIL = generar_sonido(RECURSOS + "sonidos\\rocket_expl_lod_far1.wav", self.volumen) # 0.08
             self.SONIDO_GOLPE_MISIL_MEJORADO = generar_sonido(RECURSOS + "sonidos\\rocket_launcher_lod_far3.wav", self.volumen) # 0.08
-            self.SONIDO_EXPLOSION_NAVE = generar_sonido(RECURSOS + "sonidos\\big_explosions3.wav", self.volumen) # 0.03
+            self.SONIDO_EXPLOSION_NAVE = generar_sonido(RECURSOS + "sonidos\\big_explosions3.wav", self.volumen) 
             self.fuente_volumen = pygame.font.SysFont("Txt_IV25", 30)
             self.texto_volumen = self.fuente_volumen.render("Vol: " + str(round(self.volumen * 10, 1)), True, (255,255,255))
 
@@ -109,17 +112,20 @@ class Sonidos:
         self.cambio_volumen(self.volumen)
 
     def cambio_volumen(self, volumen):
+        self.SONIDO_FONDO_NIVEL.set_volume(volumen)
+        self.SONIDO_FONDO_MENU.set_volume(volumen)
         self.SONIDO_INICIAR_NIVEL.set_volume(volumen)
         self.SONIDO_HACIA_ATRAS.set_volume(volumen)
-        self.SONIDO_FONDO_MENU.set_volume(volumen)
         self.SONIDO_DISPARO_PERSONAJE.set_volume(volumen)
         self.SONIDO_DISPARO_PERSONAJE_MEJORADO.set_volume(volumen)
+        self.SONIDO_GOLPE_A_PERSONAJE.set_volume(volumen)
         self.SONIDO_EXPLOSION_MISIL.set_volume(volumen)
         self.SONIDO_GOLPE_MISIL.set_volume(volumen)
         self.SONIDO_GOLPE_MISIL_MEJORADO.set_volume(volumen)
         self.SONIDO_EXPLOSION_NAVE.set_volume(volumen)
 
         self.texto_volumen = self.fuente_volumen.render("Vol: " + str(round(self.volumen * 10, 1)), True, (255,255,255))
+
 
 # ---------------------------BASE DE DATOS---------------------------------------
 def crear_base_y_cursor(nivel):

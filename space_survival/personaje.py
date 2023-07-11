@@ -32,7 +32,7 @@ class Personaje(pygame.sprite.Sprite):
         teclas_presionadas = pygame.key.get_pressed()
         self.vida_personaje = vida_personaje
 
-        if teclas_presionadas[K_a]:
+        if teclas_presionadas[K_a] or teclas_presionadas[K_LEFT]:
             self.rect.x -= self.velocidad
             self.caracteristicas_nave_y_bala(sentido="izquierda", dir_bala_x=-1, dir_bala_y=0, tamanio_bala=(ANCHO_MUNICION, ALTO_MUNICION), tamanio_nave=(ANCHO_PERSONAJE, ALTO_PERSONAJE))
 
@@ -40,7 +40,7 @@ class Personaje(pygame.sprite.Sprite):
                 self.misil_disparado = True
                 self.chequeo_municion(sonidos, grupo_balas, grupo_balas_mejorada)
 
-        if teclas_presionadas[K_d]:
+        if teclas_presionadas[K_d] or teclas_presionadas[K_RIGHT]:
             self.rect.x += self.velocidad
             self.caracteristicas_nave_y_bala(sentido="derecha", dir_bala_x=1, dir_bala_y=0, tamanio_bala=(ANCHO_MUNICION, ALTO_MUNICION), tamanio_nave=(ANCHO_PERSONAJE, ALTO_PERSONAJE))
 
@@ -48,7 +48,7 @@ class Personaje(pygame.sprite.Sprite):
                 self.misil_disparado = True
                 self.chequeo_municion(sonidos, grupo_balas, grupo_balas_mejorada)
 
-        if teclas_presionadas[K_w]:
+        if teclas_presionadas[K_w] or teclas_presionadas[K_UP]:
             self.rect.y -= self.velocidad
             self.caracteristicas_nave_y_bala(sentido="arriba", dir_bala_x=0, dir_bala_y=-1, tamanio_bala=(ALTO_MUNICION, ANCHO_MUNICION), tamanio_nave=(ALTO_PERSONAJE, ANCHO_PERSONAJE))
 
@@ -56,7 +56,7 @@ class Personaje(pygame.sprite.Sprite):
                 self.misil_disparado = True     
                 self.chequeo_municion(sonidos, grupo_balas, grupo_balas_mejorada)
         
-        if teclas_presionadas[K_s]:
+        if teclas_presionadas[K_s] or teclas_presionadas[K_DOWN]:
             self.rect.y += self.velocidad
             self.caracteristicas_nave_y_bala(sentido="abajo", dir_bala_x=0, dir_bala_y=1, tamanio_bala=(ALTO_MUNICION, ANCHO_MUNICION), tamanio_nave=(ALTO_PERSONAJE, ANCHO_PERSONAJE))
 

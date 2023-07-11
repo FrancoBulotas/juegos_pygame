@@ -9,7 +9,7 @@ from utilidades import *
 
 
 class NivelTres:
-    def __init__(self) -> None:
+    def __init__(self, sonidos) -> None:
         self.fondo = pygame.image.load(RECURSOS + "fondo_niveles\\fondo-nivel-tres.jpg").convert_alpha()
         self.fondo = pygame.transform.scale(self.fondo, (ANCHO_PANTALLA, ALTO_PANTALLA))
         # Crear el personaje
@@ -67,18 +67,19 @@ class NivelTres:
 
         self.flag_archivo_guardado = False
         self.archivo_puntos = obtener_nombre_archivo_puntos(nivel_tres=True)
-        self.general_nivel = GeneralNiveles(self.personaje)
+        self.sonidos = sonidos
+        self.general_nivel = GeneralNiveles(self.personaje, sonidos)
 
 
-    def desarrollo(self, mouse_pos, nivel, sonidos, cursor, conexion):
+    def desarrollo(self, mouse_pos, nivel, cursor, conexion):
         """
         - Se encarga de la ejecucion principal del nivel dos.
         - No recibe nada.
         - Retorna si el nivel termino o no, y el resultado. (valores booleanos)
         """
         self.nivel = nivel
-        self.verificar_colisiones(sonidos)
-        self.general_nivel.eleccion_menu_fin(sonidos, mouse_pos, self.nivel)
+        self.verificar_colisiones(self.sonidos)
+        self.general_nivel.eleccion_menu_fin(self.sonidos, mouse_pos, self.nivel)
 
         if not self.juego_en_pausa and not self.nivel_terminado:
             # Chequear variables del estado del juego
@@ -103,9 +104,9 @@ class NivelTres:
             
             # Actualizar la posición de personajes
             if self.nave_alien_violeta.vida >= 0:
-                self.nave_alien_violeta.actualizar(sonidos)
+                self.nave_alien_violeta.actualizar(self.sonidos)
             if self.nave_alien_plateado.vida >= 0:
-                self.nave_alien_plateado.actualizar(sonidos)
+                self.nave_alien_plateado.actualizar(self.sonidos)
             
             # Creacion balas nave alien
             if self.cronometro_previo - self.cronometro >= self.intervalo:
@@ -113,13 +114,13 @@ class NivelTres:
                 self.nave_alien_plateado.crear_bala(self.grupo_balas_alien_plateado, self.personaje)
                 self.cronometro_previo = self.cronometro
 
-            self.grupo_balas_alien_plateado.update(sonidos)
+            self.grupo_balas_alien_plateado.update(self.sonidos)
             self.grupo_balas_alien_plateado.draw(PANTALLA_JUEGO)
 
-            self.grupo_balas_alien_violeta.update(sonidos)
+            self.grupo_balas_alien_violeta.update(self.sonidos)
             self.grupo_balas_alien_violeta.draw(PANTALLA_JUEGO)
 
-            self.personaje.chequeo_teclas(sonidos, self.grupo_balas_personaje, self.vida_personaje, self.grupo_balas_personaje_mejoradas)
+            self.personaje.chequeo_teclas(self.sonidos, self.grupo_balas_personaje, self.vida_personaje, self.grupo_balas_personaje_mejoradas)
 
         if self.nivel_terminado:
             if not self.flag_archivo_guardado and not self.juego_en_pausa:
@@ -128,7 +129,7 @@ class NivelTres:
                 conexion.commit()
                 self.flag_archivo_guardado = True
 
-            self.general_nivel.dibujar_menu_fin(self.nivel, sonidos)
+            self.general_nivel.dibujar_menu_fin(self.nivel, self.sonidos)
             # Esto es para que se pueda volver a jugar dandole a volver a jugar
             self.nivel.ingreso_nivel = True
 
@@ -161,7 +162,7 @@ class NivelTres:
             self.resultado_ganador = False
 
     def generar_instancia_nivel(self):
-        return NivelTres()
+        return NivelTres(self.sonidos)
     
     # def chequeo_vida_naves(self):
     #     if self.nave_alien_violeta.vida <= 0:
@@ -183,6 +184,7 @@ class NivelTres:
                 vidas.kill()
                 break
             self.vida_personaje -= 1
+            sonidos.SONIDO_GOLPE_A_PERSONAJE.play()
             self.nave_alien_violeta.colision = True
         if not pygame.sprite.collide_mask(self.personaje, self.nave_alien_violeta):
             self.nave_alien_violeta.colision = False
@@ -194,6 +196,7 @@ class NivelTres:
                 vidas.kill()
                 break
             self.vida_personaje -= 1
+            sonidos.SONIDO_GOLPE_A_PERSONAJE.play()
             self.nave_alien_plateado.colision = True
         if not pygame.sprite.collide_mask(self.personaje, self.nave_alien_plateado):
             self.nave_alien_plateado.colision = False
@@ -206,6 +209,7 @@ class NivelTres:
                     vidas.kill()
                     break
                 self.vida_personaje -= 1
+                sonidos.SONIDO_GOLPE_A_PERSONAJE.play()
                 bala.kill()
                 bala.colision = True
             # Si el bala no le esta pegando al personaje, bala.colision vuelve a false.
@@ -220,6 +224,7 @@ class NivelTres:
                     vidas.kill()
                     break
                 self.vida_personaje -= 1
+                sonidos.SONIDO_GOLPE_A_PERSONAJE.play()
                 bala.kill()
                 bala.colision = True
             # Si el bala no le esta pegando al personaje, bala.colision vuelve a false.
