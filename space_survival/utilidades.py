@@ -70,35 +70,42 @@ def leer_archivo_volumen():
     
 
 # -------------------------------SONIDOS-------------------------------------
-pygame.mixer.init()
-def generar_sonido(ruta: str, volumen: float):
-    '''
-    Función que se encarga de generar un sondi
-    Recibe la ruta en donde se encuentra ese sonido y el volumen del mismo
-    Retorna el sonido para esperar a que se ejecute
-    '''
-    sonido = pygame.mixer.Sound(ruta)
-    sonido.set_volume(volumen)
-    return sonido
-
-
 class Sonidos:
     def __init__(self, volumen) -> None:
+            pygame.mixer.init()
             pygame.mixer.set_num_channels(8)
+            self.canal_fondo = pygame.mixer.Channel(CANAL_FONDO)
+            self.canal_disparos = pygame.mixer.Channel(CANAL_DISPARO)
+            self.canal_impactos = pygame.mixer.Channel(CANAL_IMPACTO)
+            self.canal_efectos = pygame.mixer.Channel(CANAL_EFECTOS)
             self.volumen = volumen
-            self.SONIDO_FONDO_NIVEL = generar_sonido(RECURSOS + "sonidos\\fondo_niveles.mp3", self.volumen) 
-            self.SONIDO_FONDO_MENU = generar_sonido(RECURSOS + "sonidos\\menu\\musica-fondo-menu.mp3", self.volumen) # 0.03
-            self.SONIDO_INICIAR_NIVEL = generar_sonido(RECURSOS + "sonidos\\menu\\start_button.wav", self.volumen) # 1 
-            self.SONIDO_HACIA_ATRAS = generar_sonido(RECURSOS + "sonidos\\menu\\back1.wav", self.volumen) # 0.1
-            self.SONIDO_DISPARO_PERSONAJE = generar_sonido(RECURSOS + "sonidos\\switch_to_fire_bomb.wav", self.volumen) # 0.08
-            self.SONIDO_DISPARO_PERSONAJE_MEJORADO = generar_sonido(RECURSOS + "sonidos\\rocket_h3_3.wav", self.volumen) # 0.08
-            self.SONIDO_GOLPE_A_PERSONAJE = generar_sonido(RECURSOS + "sonidos\\impacto_personaje.wav", self.volumen)
-            self.SONIDO_EXPLOSION_MISIL = generar_sonido(RECURSOS + "sonidos\\h3_small_expl4.wav", self.volumen) # 0.08
-            self.SONIDO_GOLPE_MISIL = generar_sonido(RECURSOS + "sonidos\\rocket_expl_lod_far1.wav", self.volumen) # 0.08
-            self.SONIDO_GOLPE_MISIL_MEJORADO = generar_sonido(RECURSOS + "sonidos\\rocket_launcher_lod_far3.wav", self.volumen) # 0.08
-            self.SONIDO_EXPLOSION_NAVE = generar_sonido(RECURSOS + "sonidos\\big_explosions3.wav", self.volumen) 
+            self.SONIDO_FONDO_NIVEL = self.generar_sonido(RECURSOS + "sonidos\\fondo_niveles.mp3", self.volumen) 
+            self.SONIDO_FONDO_MENU = self.generar_sonido(RECURSOS + "sonidos\\menu\\musica-fondo-menu.mp3", self.volumen) # 0.03
+            self.SONIDO_INICIAR_NIVEL = self.generar_sonido(RECURSOS + "sonidos\\menu\\start_button.wav", self.volumen) # 1 
+            self.SONIDO_HACIA_ATRAS = self.generar_sonido(RECURSOS + "sonidos\\menu\\back1.wav", self.volumen) # 0.1
+            self.SONIDO_DISPARO_PERSONAJE = self.generar_sonido(RECURSOS + "sonidos\\switch_to_fire_bomb.wav", self.volumen) # 0.08
+            self.SONIDO_DISPARO_PERSONAJE_MEJORADO = self.generar_sonido(RECURSOS + "sonidos\\rocket_h3_3.wav", self.volumen) # 0.08
+            self.SONIDO_GOLPE_A_PERSONAJE = self.generar_sonido(RECURSOS + "sonidos\\impacto_personaje.wav", self.volumen)
+            self.SONIDO_EXPLOSION_MISIL = self.generar_sonido(RECURSOS + "sonidos\\h3_small_expl4.wav", self.volumen) # 0.08
+            self.SONIDO_GOLPE_MISIL = self.generar_sonido(RECURSOS + "sonidos\\rocket_expl_lod_far1.wav", self.volumen) # 0.08
+            self.SONIDO_GOLPE_MISIL_MEJORADO = self.generar_sonido(RECURSOS + "sonidos\\rocket_launcher_lod_far3.wav", self.volumen) # 0.08
+            self.SONIDO_EXPLOSION_NAVE = self.generar_sonido(RECURSOS + "sonidos\\big_explosions3.wav", self.volumen)
+            self.SONIDO_VIDA_EXTRA = self.generar_sonido(RECURSOS + "sonidos\\vida_extra.wav", self.volumen)
+            self.SONIDO_MUNICION_EXTRA = self.generar_sonido(RECURSOS + "sonidos\\municion_extra.wav", self.volumen)
+            self.SONIDO_FIN_TIEMPO = self.generar_sonido(RECURSOS + "sonidos\\fin_reloj.wav", self.volumen)
+
             self.fuente_volumen = pygame.font.SysFont("Txt_IV25", 30)
             self.texto_volumen = self.fuente_volumen.render("Vol: " + str(round(self.volumen * 10, 1)), True, (255,255,255))
+    
+    def generar_sonido(self, ruta: str, volumen: float):
+        '''
+        Función que se encarga de generar un sondi
+        Recibe la ruta en donde se encuentra ese sonido y el volumen del mismo
+        Retorna el sonido para esperar a que se ejecute
+        '''
+        sonido = pygame.mixer.Sound(ruta)
+        sonido.set_volume(volumen)
+        return sonido
 
     def regular_volumen(self, sube=False, baja=False):
         if self.volumen >= 0:
@@ -123,6 +130,8 @@ class Sonidos:
         self.SONIDO_GOLPE_MISIL.set_volume(volumen)
         self.SONIDO_GOLPE_MISIL_MEJORADO.set_volume(volumen)
         self.SONIDO_EXPLOSION_NAVE.set_volume(volumen)
+        self.SONIDO_VIDA_EXTRA.set_volume(volumen)
+        self.SONIDO_MUNICION_EXTRA.set_volume(volumen)
 
         self.texto_volumen = self.fuente_volumen.render("Vol: " + str(round(self.volumen * 10, 1)), True, (255,255,255))
 

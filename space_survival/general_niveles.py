@@ -115,22 +115,22 @@ class GeneralNiveles:
         pygame.draw.rect(PANTALLA_JUEGO, (0,0,0), (ANCHO_PANTALLA-280, 12, 140, 40))
 
     
-    def eleccion_menu_fin(self, sonidos, mouse_pos, nivel):
+    def eleccion_menu_fin(self, mouse_pos, nivel):
         if pygame.mouse.get_pressed()[0] and nivel.nivel_terminado:
             if self.rect_volver_a_jugar.collidepoint(mouse_pos):
-                self.sonido(sonidos, hacia_atras=True)
+                self.sonido(hacia_atras=True)
                 nivel.nivel = nivel.generar_instancia_nivel()                
                 nivel.menu_activo = False
                 nivel.nivel_terminado = False
 
             if self.rect_play.collidepoint(mouse_pos) and nivel.juego_en_pausa:
-                self.sonido(sonidos, hacia_atras=True)
+                self.sonido(hacia_atras=True)
                 nivel.juego_en_pausa = False
                 nivel.menu_activo = False
                 nivel.nivel_terminado = False
                 
             if self.rect_volver_al_menu.collidepoint(mouse_pos):
-                self.sonido(sonidos, hacia_atras=True)
+                self.sonido(hacia_atras=True)
                 nivel.nivel = nivel.generar_instancia_nivel()
                 nivel.menu_activo = True
                 nivel.nivel_terminado = False
@@ -141,14 +141,12 @@ class GeneralNiveles:
             nivel.nivel_terminado = True
 
 
-    def sonido(self, sonidos, hacia_atras=False, fondo = False):
+    def sonido(self, hacia_atras=False, canal=None, sonido=None):
         if hacia_atras:
-            sonidos.SONIDO_HACIA_ATRAS.play()
+            self.sonidos.canal_efectos.play(self.sonidos.SONIDO_HACIA_ATRAS)
+        else:
+            canal.play(sonido)
         
-        if fondo:
-            sonidos.SONIDO_FONDO_NIVEL.play()      
-        
-
 
     # def verificar_colisiones(self, mouse_pos, nivel) -> None:
     #     """

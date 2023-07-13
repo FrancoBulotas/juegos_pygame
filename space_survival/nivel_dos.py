@@ -60,7 +60,8 @@ class NivelDos:
         self.flag_archivo_guardado = False
         self.archivo_puntos = obtener_nombre_archivo_puntos(nivel_dos=True)
         self.sonidos = sonidos
-        self.general_nivel = GeneralNiveles(self.personaje, sonidos)
+        self.sonido_fondo = False
+        self.general_nivel = GeneralNiveles(self.personaje, self.sonidos)
 
 
     def desarrollo(self, mouse_pos, nivel, cursor, conexion):
@@ -70,8 +71,9 @@ class NivelDos:
         - Retorna si el nivel termino o no, y el resultado. (valores booleanos)
         """
         self.nivel = nivel
-        self.verificar_colisiones(self.sonidos)
-        self.general_nivel.eleccion_menu_fin(self.sonidos, mouse_pos, self.nivel)
+        self.correr_musica()
+        self.verificar_colisiones()
+        self.general_nivel.eleccion_menu_fin(mouse_pos, self.nivel)
 
         if not self.juego_en_pausa and not self.nivel_terminado:
  
@@ -157,8 +159,14 @@ class NivelDos:
 
     def generar_instancia_nivel(self):
         return NivelDos(self.sonidos)
+    
+    def correr_musica(self):
+        if not self.sonido_fondo:
+            self.sonidos.canal_fondo.play(self.sonidos.SONIDO_FONDO_NIVEL)
+            self.sonido_fondo = True
 
-    def verificar_colisiones(self, sonidos) -> None:
+
+    def verificar_colisiones(self) -> None:
         """
         - Se encarga de verificar si hay colisiones entre los objetos.
         - Recibe la instancia del sonido.
@@ -171,7 +179,8 @@ class NivelDos:
                 vidas.kill()
                 break
             self.vida_personaje -= 1
-            sonidos.SONIDO_GOLPE_A_PERSONAJE.play()
+            #self.sonidos.canal_impactos.play(self.sonidos.SONIDO_GOLPE_A_PERSONAJE)
+            self.general_nivel.sonido(canal=self.sonidos.canal_impactos, sonido=self.sonidos.SONIDO_GOLPE_A_PERSONAJE)
             self.nave_alien.colision = True
         if not pygame.sprite.collide_mask(self.personaje, self.nave_alien):
             self.nave_alien.colision = False
@@ -184,7 +193,8 @@ class NivelDos:
                     vidas.kill()
                     break
                 self.vida_personaje -= 1
-                sonidos.SONIDO_GOLPE_A_PERSONAJE.play()
+                #self.sonidos.canal_impactos.play(self.sonidos.SONIDO_GOLPE_A_PERSONAJE)
+                self.general_nivel.sonido(canal=self.sonidos.canal_impactos, sonido=self.sonidos.SONIDO_GOLPE_A_PERSONAJE)
                 bala.colision = True
                 bala.kill()
             # Si el bala no le esta pegando al personaje, bala.colision vuelve a false.
@@ -198,11 +208,13 @@ class NivelDos:
                 vida_extra.kill()
                 vida = Vida()
                 self.vidas_personaje.add(vida)
+                self.general_nivel.sonido(canal=self.sonidos.canal_efectos, sonido=self.sonidos.SONIDO_VIDA_EXTRA)
 
         # Colision entre personaje y balas extra
         for bala_extra in self.grupo_balas_extra:
             if pygame.sprite.collide_mask(self.personaje, bala_extra):
                 self.personaje.contador_municion += MUNICION_POR_BALAS_EXTRA
+                self.general_nivel.sonido(canal=self.sonidos.canal_efectos, sonido=self.sonidos.SONIDO_MUNICION_EXTRA)
                 bala_extra.kill()
 
         # Verifico si la bala del personaje le pega a la nave y a sus balas
@@ -216,7 +228,7 @@ class NivelDos:
                 if self.nave_alien.vida == 0:
                     self.contador_eliminaciones_naves += 1
                     self.contador_puntos += PUNTOS_POR_NAVE_ALIEN
-                sonidos.SONIDO_GOLPE_MISIL.play()
+                self.general_nivel.sonido(canal=self.sonidos.canal_impactos, sonido=self.sonidos.SONIDO_GOLPE_MISIL)
                 bala_personaje.kill()
 
             for bala_alien in self.grupo_balas_alien:
@@ -239,7 +251,8 @@ class NivelDos:
                     vidas.kill()
                     break
                 self.vida_personaje -= 1
-                sonidos.SONIDO_GOLPE_A_PERSONAJE.play()
+                #self.sonidos.canal_impactos.play(self.sonidos.SONIDO_GOLPE_A_PERSONAJE)
+                self.general_nivel.sonido(canal=self.sonidos.canal_impactos, sonido=self.sonidos.SONIDO_GOLPE_A_PERSONAJE)
                 asteroide.colision = True
             # Si el asteroide no le esta pegando al personaje, asteroide.colision vuelve a false.
             if not pygame.sprite.collide_mask(self.personaje, asteroide): 

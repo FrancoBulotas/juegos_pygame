@@ -113,11 +113,10 @@ class Menu:
 
     def sonido(self, sonidos, arrancar=False, parar=False, inicio_nivel=False):
         if arrancar:    
+            #sonidos.canal_fondo.play(sonidos.SONIDO_FONDO_MENU)
             sonidos.SONIDO_FONDO_MENU.play()
-            #sonidos.SONIDO_FONDO_NIVEL.stop()
         if parar:
             sonidos.SONIDO_FONDO_MENU.stop()
-            #sonidos.SONIDO_FONDO_NIVEL.play()
 
         if inicio_nivel:
             sonidos.SONIDO_INICIAR_NIVEL.play()

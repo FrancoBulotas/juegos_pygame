@@ -10,7 +10,8 @@ class Personaje(pygame.sprite.Sprite):
         self.image = pygame.image.load(RECURSOS + "personaje\\nave\\nave-arriba-1.png").convert_alpha()
         self.image = pygame.transform.scale(self.image, (50, 100))
         self.rect = self.image.get_rect()
-
+        self.rect.center = (ANCHO_PANTALLA/2,150)
+        self.chequeo_movimiento = False
         self.velocidad = VELOCIDAD_PERSONAJE
         self.vida = VIDAS_PERSONAJE
         self.misil_disparado = False
@@ -21,6 +22,7 @@ class Personaje(pygame.sprite.Sprite):
         self.direccion_personaje_y = -1
         self.nombre_imagen_nave_actual = "nave-arriba-1.png"
         self.tamanio_bala_actual = (ALTO_MUNICION, ANCHO_MUNICION)
+        self.tamanio_bala = (ALTO_MUNICION, ANCHO_MUNICION)
 
 
     def chequeo_teclas(self, sonidos, grupo_balas, vida_personaje, grupo_balas_mejorada=None):
@@ -34,6 +36,7 @@ class Personaje(pygame.sprite.Sprite):
 
         if teclas_presionadas[K_a] or teclas_presionadas[K_LEFT]:
             self.rect.x -= self.velocidad
+            self.chequeo_movimiento = True
             self.caracteristicas_nave_y_bala(sentido="izquierda", dir_bala_x=-1, dir_bala_y=0, tamanio_bala=(ANCHO_MUNICION, ALTO_MUNICION), tamanio_nave=(ANCHO_PERSONAJE, ALTO_PERSONAJE))
 
             if teclas_presionadas[K_SPACE] and not self.misil_disparado:
@@ -42,6 +45,7 @@ class Personaje(pygame.sprite.Sprite):
 
         if teclas_presionadas[K_d] or teclas_presionadas[K_RIGHT]:
             self.rect.x += self.velocidad
+            self.chequeo_movimiento = True
             self.caracteristicas_nave_y_bala(sentido="derecha", dir_bala_x=1, dir_bala_y=0, tamanio_bala=(ANCHO_MUNICION, ALTO_MUNICION), tamanio_nave=(ANCHO_PERSONAJE, ALTO_PERSONAJE))
 
             if teclas_presionadas[K_SPACE] and not self.misil_disparado:
@@ -50,6 +54,7 @@ class Personaje(pygame.sprite.Sprite):
 
         if teclas_presionadas[K_w] or teclas_presionadas[K_UP]:
             self.rect.y -= self.velocidad
+            self.chequeo_movimiento = True
             self.caracteristicas_nave_y_bala(sentido="arriba", dir_bala_x=0, dir_bala_y=-1, tamanio_bala=(ALTO_MUNICION, ANCHO_MUNICION), tamanio_nave=(ALTO_PERSONAJE, ANCHO_PERSONAJE))
 
             if teclas_presionadas[K_SPACE] and not self.misil_disparado:
@@ -58,12 +63,17 @@ class Personaje(pygame.sprite.Sprite):
         
         if teclas_presionadas[K_s] or teclas_presionadas[K_DOWN]:
             self.rect.y += self.velocidad
+            self.chequeo_movimiento = True
             self.caracteristicas_nave_y_bala(sentido="abajo", dir_bala_x=0, dir_bala_y=1, tamanio_bala=(ALTO_MUNICION, ANCHO_MUNICION), tamanio_nave=(ALTO_PERSONAJE, ANCHO_PERSONAJE))
 
             if teclas_presionadas[K_SPACE] and not self.misil_disparado:
                 self.misil_disparado = True
                 self.chequeo_municion(sonidos, grupo_balas, grupo_balas_mejorada)
 
+        if teclas_presionadas[K_SPACE] and not self.chequeo_movimiento and not self.misil_disparado:
+            self.misil_disparado = True
+            self.caracteristicas_nave_y_bala(sentido="arriba", dir_bala_x=0, dir_bala_y=-1, tamanio_bala=(ALTO_MUNICION, ANCHO_MUNICION), tamanio_nave=(ALTO_PERSONAJE, ANCHO_PERSONAJE))
+            self.chequeo_municion(sonidos, grupo_balas, grupo_balas_mejorada)
         # Chequeo de disparo de misil normal
         if teclas_presionadas[K_SPACE] and not self.misil_disparado:
             self.misil_disparado = True
@@ -73,6 +83,7 @@ class Personaje(pygame.sprite.Sprite):
             self.direccion_y_bala = self.direccion_personaje_y
             self.chequeo_municion(sonidos, grupo_balas, grupo_balas_mejorada)
 
+        # Para que se dispare una sola vez
         if not teclas_presionadas[K_SPACE]:
             self.misil_disparado = False
 
@@ -119,22 +130,6 @@ class Personaje(pygame.sprite.Sprite):
         self.tamanio_bala_actual = self.tamanio_bala
 
 
-    def crear_bala(self, sonidos, grupo_balas, grupo_balas_mejorada=None ,mejorada=False):
-        """
-        - Se encarga de crear la instancia de la bala del personaje.
-        - Recibe el grupo de balas.
-        - No retorna nada.
-        """
-        if mejorada:
-            sonidos.SONIDO_DISPARO_PERSONAJE_MEJORADO.play()
-            self.bala_mejorada = BalaPersonajeMejorada(self.rect.x, self.rect.y, self.direccion_x_bala, self.direccion_y_bala, self.nombre_bala, self.tamanio_bala)
-            grupo_balas_mejorada.add(self.bala_mejorada)
-        else:
-            sonidos.SONIDO_DISPARO_PERSONAJE.play()
-            self.bala = BalaPersonaje(self.rect.x, self.rect.y, self.direccion_x_bala, self.direccion_y_bala, self.nombre_bala, self.tamanio_bala)
-            grupo_balas.add(self.bala)
-
-    
     def chequeo_municion(self, sonidos, grupo_balas, grupo_balas_mejorada, mejorada=False):
         """-
         - Verifica si el personaje tiene municion, si tieneresta uno y llama a crer_bala().
@@ -149,6 +144,22 @@ class Personaje(pygame.sprite.Sprite):
             if self.contador_municion > 0: 
                 self.contador_municion -= 1
                 self.crear_bala(sonidos, grupo_balas)
+
+    def crear_bala(self, sonidos, grupo_balas, grupo_balas_mejorada=None ,mejorada=False):
+        """
+        - Se encarga de crear la instancia de la bala del personaje.
+        - Recibe el grupo de balas.
+        - No retorna nada.
+        """
+        if mejorada:
+            sonidos.canal_disparos.play(sonidos.SONIDO_DISPARO_PERSONAJE_MEJORADO)
+            self.bala_mejorada = BalaPersonajeMejorada(self.rect.x, self.rect.y, self.direccion_x_bala, self.direccion_y_bala, self.nombre_bala, self.tamanio_bala)
+            grupo_balas_mejorada.add(self.bala_mejorada)
+        else:
+            #sonidos.SONIDO_DISPARO_PERSONAJE.play()
+            sonidos.canal_disparos.play(sonidos.SONIDO_DISPARO_PERSONAJE)
+            self.bala = BalaPersonaje(self.rect.x, self.rect.y, self.direccion_x_bala, self.direccion_y_bala, self.nombre_bala, self.tamanio_bala)
+            grupo_balas.add(self.bala)
 
 
 class BalaPersonaje(pygame.sprite.Sprite):

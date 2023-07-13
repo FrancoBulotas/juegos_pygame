@@ -68,7 +68,8 @@ class NivelTres:
         self.flag_archivo_guardado = False
         self.archivo_puntos = obtener_nombre_archivo_puntos(nivel_tres=True)
         self.sonidos = sonidos
-        self.general_nivel = GeneralNiveles(self.personaje, sonidos)
+        self.sonido_fondo = False
+        self.general_nivel = GeneralNiveles(self.personaje, self.sonidos)
 
 
     def desarrollo(self, mouse_pos, nivel, cursor, conexion):
@@ -78,8 +79,9 @@ class NivelTres:
         - Retorna si el nivel termino o no, y el resultado. (valores booleanos)
         """
         self.nivel = nivel
-        self.verificar_colisiones(self.sonidos)
-        self.general_nivel.eleccion_menu_fin(self.sonidos, mouse_pos, self.nivel)
+        self.correr_musica()
+        self.verificar_colisiones()
+        self.general_nivel.eleccion_menu_fin(mouse_pos, self.nivel)
 
         if not self.juego_en_pausa and not self.nivel_terminado:
             # Chequear variables del estado del juego
@@ -164,14 +166,13 @@ class NivelTres:
     def generar_instancia_nivel(self):
         return NivelTres(self.sonidos)
     
-    # def chequeo_vida_naves(self):
-    #     if self.nave_alien_violeta.vida <= 0:
-    #         del self.nave_alien_violeta
-    #     if self.nave_alien_plateado.vida <= 0:
-    #         del self.nave_alien_plateado
-        
+    def correr_musica(self):
+        if not self.sonido_fondo:
+            self.sonidos.canal_fondo.play(self.sonidos.SONIDO_FONDO_NIVEL)
+            self.sonido_fondo = True
 
-    def verificar_colisiones(self, sonidos) -> None:
+
+    def verificar_colisiones(self) -> None:
         """
         - Se encarga de verificar si hay colisiones entre los objetos.
         - Recibe la instancia del sonido.
@@ -184,7 +185,7 @@ class NivelTres:
                 vidas.kill()
                 break
             self.vida_personaje -= 1
-            sonidos.SONIDO_GOLPE_A_PERSONAJE.play()
+            self.general_nivel.sonido(canal=self.sonidos.canal_impactos, sonido=self.sonidos.SONIDO_GOLPE_A_PERSONAJE)
             self.nave_alien_violeta.colision = True
         if not pygame.sprite.collide_mask(self.personaje, self.nave_alien_violeta):
             self.nave_alien_violeta.colision = False
@@ -196,7 +197,7 @@ class NivelTres:
                 vidas.kill()
                 break
             self.vida_personaje -= 1
-            sonidos.SONIDO_GOLPE_A_PERSONAJE.play()
+            self.general_nivel.sonido(canal=self.sonidos.canal_impactos, sonido=self.sonidos.SONIDO_GOLPE_A_PERSONAJE)
             self.nave_alien_plateado.colision = True
         if not pygame.sprite.collide_mask(self.personaje, self.nave_alien_plateado):
             self.nave_alien_plateado.colision = False
@@ -209,7 +210,7 @@ class NivelTres:
                     vidas.kill()
                     break
                 self.vida_personaje -= 1
-                sonidos.SONIDO_GOLPE_A_PERSONAJE.play()
+                self.general_nivel.sonido(canal=self.sonidos.canal_impactos, sonido=self.sonidos.SONIDO_GOLPE_A_PERSONAJE)
                 bala.kill()
                 bala.colision = True
             # Si el bala no le esta pegando al personaje, bala.colision vuelve a false.
@@ -224,7 +225,7 @@ class NivelTres:
                     vidas.kill()
                     break
                 self.vida_personaje -= 1
-                sonidos.SONIDO_GOLPE_A_PERSONAJE.play()
+                self.general_nivel.sonido(canal=self.sonidos.canal_impactos, sonido=self.sonidos.SONIDO_GOLPE_A_PERSONAJE)
                 bala.kill()
                 bala.colision = True
             # Si el bala no le esta pegando al personaje, bala.colision vuelve a false.
@@ -238,17 +239,20 @@ class NivelTres:
                 vida_extra.kill()
                 vida = Vida()
                 self.vidas_personaje.add(vida)
+                self.general_nivel.sonido(canal=self.sonidos.canal_efectos, sonido=self.sonidos.SONIDO_VIDA_EXTRA)
 
         # Colision entre personaje y balas extra
         for bala_extra in self.grupo_balas_extra:
             if pygame.sprite.collide_mask(self.personaje, bala_extra):
                 self.personaje.contador_municion += MUNICION_POR_BALAS_EXTRA
                 bala_extra.kill()
+                self.general_nivel.sonido(canal=self.sonidos.canal_efectos, sonido=self.sonidos.SONIDO_MUNICION_EXTRA)
 
         for bala_extra_mejorada in self.grupo_balas_extra_mejorada:
             if pygame.sprite.collide_mask(self.personaje, bala_extra_mejorada):
                 self.personaje.contador_municion_mejorada += MUNICION_POR_BALAS_EXTRA_MEJORADA
                 bala_extra_mejorada.kill()
+                self.general_nivel.sonido(canal=self.sonidos.canal_efectos, sonido=self.sonidos.SONIDO_MUNICION_EXTRA)
 
         # Verifico si la bala del personaje le pega al alien_violeta y a sus balas
         for bala_personaje in self.grupo_balas_personaje:    
@@ -261,7 +265,7 @@ class NivelTres:
                 if self.nave_alien_violeta.vida == 0:
                     self.contador_eliminaciones_naves += 1
                     self.contador_puntos += PUNTOS_POR_NAVE_ALIEN
-                sonidos.SONIDO_GOLPE_MISIL.play()
+                self.general_nivel.sonido(canal=self.sonidos.canal_impactos, sonido=self.sonidos.SONIDO_GOLPE_MISIL)
                 bala_personaje.kill()
 
             for bala_alien in self.grupo_balas_alien_violeta:
@@ -289,7 +293,7 @@ class NivelTres:
                 if self.nave_alien_violeta.vida == 0:
                     self.contador_eliminaciones_naves += 1
                     self.contador_puntos += PUNTOS_POR_NAVE_ALIEN
-                    sonidos.SONIDO_GOLPE_MISIL_MEJORADO.play()
+                    self.general_nivel.sonido(canal=self.sonidos.canal_impactos, sonido=self.sonidos.SONIDO_GOLPE_MISIL_MEJORADO)
                 bala_personaje_mejorada.kill()
 
             for bala_alien in self.grupo_balas_alien_violeta:
@@ -302,7 +306,7 @@ class NivelTres:
                     if bala_alien.vida == 0:
                         self.contador_eliminaciones_aliens += 1
                         self.contador_puntos += PUNTOS_POR_ALIEN
-                    sonidos.SONIDO_GOLPE_MISIL_MEJORADO.play()
+                    self.general_nivel.sonido(canal=self.sonidos.canal_impactos, sonido=self.sonidos.SONIDO_GOLPE_MISIL_MEJORADO)
 
         # Verifico si la bala del personaje le pega al alien_plateado y a sus balas
         for bala_personaje in self.grupo_balas_personaje:    
@@ -315,7 +319,7 @@ class NivelTres:
                 if self.nave_alien_plateado.vida == 0:
                     self.contador_eliminaciones_naves += 1
                     self.contador_puntos += PUNTOS_POR_NAVE_ALIEN
-                sonidos.SONIDO_GOLPE_MISIL.play()
+                self.general_nivel.sonido(canal=self.sonidos.canal_impactos, sonido=self.sonidos.SONIDO_GOLPE_MISIL)
                 bala_personaje.kill()
 
             for bala_alien in self.grupo_balas_alien_plateado:
@@ -343,7 +347,7 @@ class NivelTres:
                 if self.nave_alien_plateado.vida == 0:
                     self.contador_eliminaciones_naves += 1
                     self.contador_puntos += PUNTOS_POR_NAVE_ALIEN
-                sonidos.SONIDO_GOLPE_MISIL_MEJORADO.play()
+                self.general_nivel.sonido(canal=self.sonidos.canal_impactos, sonido=self.sonidos.SONIDO_GOLPE_MISIL_MEJORADO)
                 bala_personaje_mejorada.kill()
 
             for bala_alien in self.grupo_balas_alien_plateado:
@@ -356,4 +360,4 @@ class NivelTres:
                     if bala_alien.vida == 0:
                         self.contador_eliminaciones_aliens += 1
                         self.contador_puntos += PUNTOS_POR_ALIEN
-                    sonidos.SONIDO_GOLPE_MISIL_MEJORADO.play()
+                    self.general_nivel.sonido(canal=self.sonidos.canal_impactos, sonido=self.sonidos.SONIDO_GOLPE_MISIL_MEJORADO)

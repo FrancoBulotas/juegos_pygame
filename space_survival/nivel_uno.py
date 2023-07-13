@@ -50,8 +50,9 @@ class NivelUno:
         self.archivo_puntos = obtener_nombre_archivo_puntos(nivel_uno=True)
 
         self.sonidos = sonidos
-        self.general_nivel = GeneralNiveles(self.personaje, sonidos)
-        
+        self.sonido_fondo = False
+        self.general_nivel = GeneralNiveles(self.personaje, self.sonidos)
+    
 
     def desarrollo(self, mouse_pos, nivel, cursor, conexion) -> bool:
         """
@@ -60,9 +61,10 @@ class NivelUno:
         - Retorna si el nivel termino o no, y el resultado. (valores booleanos)
         """
         self.nivel = nivel
+        self.correr_musica()
         self.verificar_colisiones()
-        self.general_nivel.eleccion_menu_fin(self.sonidos, mouse_pos, self.nivel)
-
+        self.general_nivel.eleccion_menu_fin(mouse_pos, self.nivel)
+    
         if not self.juego_en_pausa and not self.nivel_terminado:
             # Chequear variables del estado del juego
             self.chequeo_estado_juego()
@@ -75,7 +77,6 @@ class NivelUno:
             # Actualizamos balas del personaje
             self.grupo_balas_personaje.update()
             # Actualizar y dibujar los misiles, balas y vidas
-             
             self.grupo_misiles.update(self.sonidos)
 
             for i in range(len(self.vidas_personaje)):
@@ -93,12 +94,9 @@ class NivelUno:
                 guardar_datos_en_base(self.nivel.contador_puntos, cursor, eliminaciones_misil=self.contador_eliminaciones)
                 conexion.commit()
                 self.flag_archivo_guardado = True
-
             self.general_nivel.dibujar_menu_fin(self.nivel, self.sonidos)
             # Esto es para que se pueda volver a jugar dandole a volver a jugar
             self.nivel.ingreso_nivel = True
-
-        self.general_nivel.sonido(self.sonidos, fondo=True)
 
 
     def chequeo_estado_juego(self) -> None:
@@ -132,6 +130,13 @@ class NivelUno:
 
     def generar_instancia_nivel(self):
         return NivelUno(self.sonidos)
+    
+
+    def correr_musica(self):
+        if not self.sonido_fondo:
+            self.sonidos.canal_fondo.play(self.sonidos.SONIDO_FONDO_NIVEL)
+            self.sonido_fondo = True
+
 
     def verificar_colisiones(self) -> None:
         """
@@ -147,7 +152,8 @@ class NivelUno:
                     vidas.kill()
                     break
                 self.vida_personaje -= 1
-                self.sonidos.SONIDO_GOLPE_A_PERSONAJE.play()
+                #self.sonidos.canal_impactos.play(self.sonidos.SONIDO_GOLPE_A_PERSONAJE)
+                self.general_nivel.sonido(canal=self.sonidos.canal_impactos, sonido=self.sonidos.SONIDO_GOLPE_A_PERSONAJE)
                 misil.colision = True
             # Si el misil no le esta pegando al personaje, misil.colision vuelve a false.
             if not pygame.sprite.collide_mask(self.personaje, misil): 
@@ -156,6 +162,7 @@ class NivelUno:
         for bala_extra in self.grupo_balas_extra:
             if pygame.sprite.collide_mask(self.personaje, bala_extra):
                 self.personaje.contador_municion += MUNICION_POR_BALAS_EXTRA
+                self.general_nivel.sonido(canal=self.sonidos.canal_efectos, sonido=self.sonidos.SONIDO_MUNICION_EXTRA)
                 bala_extra.kill()
 
         # Verifico si la bala del personaje le pega al misil
@@ -165,7 +172,8 @@ class NivelUno:
                     misil.vida -= 1
                     for vida in misil.vidas_misil: # Eliminamos la imagen de la vida del misil al que el personaje impacta con sus balas
                         vida.kill()
-                        self.sonidos.SONIDO_GOLPE_MISIL.play()
+                        #self.sonidos.canal_impactos.play(self.sonidos.SONIDO_GOLPE_MISIL)
+                        self.general_nivel.sonido(canal=self.sonidos.canal_impactos, sonido=self.sonidos.SONIDO_GOLPE_MISIL)
                         break
                     # sumamos puntos al matar al misil
                     if misil.vida == 0:

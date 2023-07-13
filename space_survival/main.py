@@ -33,10 +33,6 @@ menu_activo = True
 mostrar_estadisticas = False
 
 # Archivos / Base de datos
-# flag_archivo_guardado = False
-# nivel_uno.archivo_puntos = obtener_nombre_archivo_puntos(nivel_uno=True)
-# nivel_dos.archivo_puntos = obtener_nombre_archivo_puntos(nivel_dos=True)
-# nivel_tres.archivo_puntos = obtener_nombre_archivo_puntos(nivel_tres=True)
 conexion_nivel_uno, cursor_nivel_uno = crear_base_y_cursor(nivel=1)
 conexion_nivel_dos, cursor_nivel_dos = crear_base_y_cursor(nivel=2)
 conexion_nivel_tres, cursor_nivel_tres = crear_base_y_cursor(nivel=3)
@@ -91,6 +87,11 @@ while juego_corriendo:
         nivel_dos.cronometro -= 1
     if tiempo_actual != tiempo_previo and not menu_activo and nivel_tres.ingreso_nivel and not nivel_tres.juego_en_pausa:
         nivel_tres.cronometro -= 1
+    
+    if nivel_uno.cronometro == 5 or nivel_dos.cronometro == 5 or nivel_tres.cronometro == 5 :
+        sonidos.SONIDO_FIN_TIEMPO.play()
+    elif nivel_uno.cronometro < 1 or nivel_dos.cronometro < 1 or nivel_tres.cronometro < 1:
+        sonidos.SONIDO_FIN_TIEMPO.stop()
 
     tiempo_previo = tiempo_actual
 
@@ -101,7 +102,7 @@ while juego_corriendo:
         if mostrar_estadisticas:
             menu.dibujar_menu_estadisticas(cursor_nivel_uno, cursor_nivel_dos, cursor_nivel_tres)
     else:
-        menu.sonido(sonidos, parar=True) 
+        menu.sonido(sonidos, parar=True)
         # NIVEL UNO
         if nivel_uno.ingreso_nivel:
             nivel_uno.desarrollo(mouse_pos, nivel_uno, cursor_nivel_uno, conexion_nivel_uno)
