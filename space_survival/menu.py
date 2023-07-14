@@ -29,7 +29,7 @@ class Menu:
         self.imagen_fondo_logros = pygame.transform.scale(self.imagen_fondo_logros, (600, 600))
 
         self.imagen_instrucciones = pygame.image.load(RECURSOS + "menu\\nube.png").convert_alpha()
-        self.imagen_instrucciones = pygame.transform.scale(self.imagen_instrucciones, (450, 400))
+        self.imagen_instrucciones = pygame.transform.scale(self.imagen_instrucciones, (400, 300))
 
         self.fuente_mejor_puntuacion = pygame.font.SysFont("Arial Black", 20)
         self.fuente_eliminaciones = pygame.font.SysFont("Arial Black", 20)
@@ -73,7 +73,7 @@ class Menu:
             self.texto_mejor_puntuacion = self.fuente_mejor_puntuacion.render("Best Score: " + str(puntos_nivel_tres), True, (255,255,255))
             PANTALLA_JUEGO.blit(self.texto_mejor_puntuacion, (870, ALTO_PANTALLA-190))
 
-        PANTALLA_JUEGO.blit(self.imagen_instrucciones, (ANCHO_PANTALLA-400, ALTO_PANTALLA-400))
+        PANTALLA_JUEGO.blit(self.imagen_instrucciones, (ANCHO_PANTALLA-450, ALTO_PANTALLA-300))
 
 
     def dibujar_menu_estadisticas(self, cursor_nivel_uno, cursor_nivel_dos, cursor_nivel_tres):

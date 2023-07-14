@@ -70,11 +70,9 @@ while juego_corriendo:
                     menu_activo = False
                 menu.seleccion = ""
         if evento.type == pygame.KEYDOWN:
-            if evento.key == pygame.K_UP:
-                #volumen = regular_volumen(volumen, sube=True)  
+            if evento.key == pygame.K_0:
                 sonidos.regular_volumen(sube=True)
-            elif evento.key == pygame.K_DOWN:
-                #volumen = regular_volumen(volumen, baja=True)
+            elif evento.key == pygame.K_9:
                 sonidos.regular_volumen(baja=True)
                 
     # Control del tiempo

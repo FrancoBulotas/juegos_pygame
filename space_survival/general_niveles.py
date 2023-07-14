@@ -1,5 +1,6 @@
 import pygame
 from constantes import *
+import random
 
 
 class GeneralNiveles:
@@ -54,6 +55,8 @@ class GeneralNiveles:
         self.imagen_municion_mejorada = pygame.transform.scale(self.imagen_municion_mejorada, (50,50))
 
         self.sonidos = sonidos
+        self.fondo_estrellas = pygame.Surface((ANCHO_FONDO_ESTRELLAS, ALTO_FONDO_ESTRELLAS), pygame.SRCALPHA)
+        self.fondo_estrellas.fill((0, 0, 0, 0))
 
     def dibujar_barra_superior(self, nivel, nivel_tres=False) -> None:
         """
@@ -147,6 +150,31 @@ class GeneralNiveles:
         else:
             canal.play(sonido)
         
+
+    def dibujar_fondo_estrellas(self, personaje, factor_desplazamiento_x, factor_desplazamiento_y, capa):
+        fondo_x = -personaje.rect.x * factor_desplazamiento_x * capa
+        fondo_y = -personaje.rect.y * factor_desplazamiento_y * capa
+
+        PANTALLA_JUEGO.blit(self.fondo_estrellas, (fondo_x, fondo_y))
+
+    def generar_estrellas(self, radio):
+        for _ in range(NUMERO_ESTRELLAS):
+            x = random.randint(0, ANCHO_FONDO_ESTRELLAS)
+            y = random.randint(0, ALTO_FONDO_ESTRELLAS)
+            pygame.draw.circle(self.fondo_estrellas, (255, 255, 255), (x, y), radio)
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     # def verificar_colisiones(self, mouse_pos, nivel) -> None:
     #     """

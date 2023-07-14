@@ -102,7 +102,6 @@ class Personaje(pygame.sprite.Sprite):
         # Para que el personaje no pueda salir de la pantalla
         self.rect.x = max(0, min(self.rect.x, ANCHO_PANTALLA - self.rect.width))
         self.rect.y = max(ALTURA_MENU_SUPERIOR - 10, min(self.rect.y, ALTO_PANTALLA + 60 - self.rect.height))
-
         PANTALLA_JUEGO.blit(self.image, self.rect) # Dibuja la imagen del personaje
 
 

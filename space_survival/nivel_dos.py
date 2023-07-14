@@ -63,6 +63,9 @@ class NivelDos:
         self.sonido_fondo = False
         self.general_nivel = GeneralNiveles(self.personaje, self.sonidos)
 
+        self.general_nivel.generar_estrellas(0.5)
+        self.general_nivel.generar_estrellas(1)
+        self.general_nivel.generar_estrellas(1.5)
 
     def desarrollo(self, mouse_pos, nivel, cursor, conexion):
         """
@@ -80,7 +83,12 @@ class NivelDos:
             # Chequear variables del estado del juego
             self.chequeo_estado_juego()
 
-            PANTALLA_JUEGO.blit(self.fondo, (0, ALTURA_MENU_SUPERIOR - 10)) # Fondo de pantalla
+            #PANTALLA_JUEGO.blit(self.fondo, (0, ALTURA_MENU_SUPERIOR - 10)) # Fondo de pantalla
+            PANTALLA_JUEGO.fill((0,0,0))
+            self.general_nivel.dibujar_fondo_estrellas(self.personaje, 0.1, 0.1, capa=1)
+            self.general_nivel.dibujar_fondo_estrellas(self.personaje, 0.1, 0.1, capa=2)
+            self.general_nivel.dibujar_fondo_estrellas(self.personaje, 0.1, 0.1, capa=3)
+
             self.general_nivel.dibujar_barra_superior(self.nivel)    
 
             # Agregamos municion y vidas extra
